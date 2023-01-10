@@ -1,0 +1,2 @@
+dev/fluttercommunity/plus/network_info/BuildConfig.java
+ dev.fluttercommunity.plus.network_info.BuildConfig
