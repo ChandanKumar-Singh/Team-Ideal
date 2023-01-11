@@ -12,6 +12,7 @@ import 'package:dakshattendance/AppConst/AppConst.dart';
 import 'package:dakshattendance/AppConst/AppConst.dart';
 import 'package:dakshattendance/AppConst/AppConst.dart';
 import 'package:dakshattendance/const/global.dart';
+import 'package:dakshattendance/provider/EmployeeInfoProvider/EmployeeInfoProvider.dart';
 import 'package:dakshattendance/provider/PaySlipProvider.dart';
 import 'package:dakshattendance/provider/leaveProvider.dart';
 import 'package:dakshattendance/screens/homepage.dart';
@@ -69,6 +70,7 @@ class _MyAppState extends State<MyApp> {
           providers: [
             ChangeNotifierProvider(create: (context) => LeaveProvider()),
             ChangeNotifierProvider(create: (context) => SlipProvider()),
+            ChangeNotifierProvider(create: (context) => EmployeeInfoProvider()),
           ],
           child: GetMaterialApp(
             builder: (context, child) {

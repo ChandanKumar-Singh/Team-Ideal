@@ -9,6 +9,7 @@ MERGED from [:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-
 MERGED from [:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-10:12
 MERGED from [:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-17:12
 MERGED from [:flutter_plugin_android_lifecycle] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:sqflite] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\sqflite\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-14:12
 MERGED from [:path_provider_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\path_provider_android\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:connectivity_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\connectivity_plus\intermediates\library_manifest\debug\AndroidManifest.xml:2:1-9:12
@@ -177,6 +178,8 @@ MERGED from [:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\bu
 MERGED from [:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\flutter_plugin_android_lifecycle\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:sqflite] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\sqflite\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:sqflite] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\sqflite\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:path_provider_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\path_provider_android\intermediates\library_manifest\debug\AndroidManifest.xml:5:5-44
