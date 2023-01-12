@@ -62,6 +62,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "checked_yaml",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/checked_yaml-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "cli_notify",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/cli_notify-0.0.4",
       "packageUri": "lib/",
@@ -158,6 +164,12 @@
       "languageVersion": "2.15"
     },
     {
+      "name": "dio",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/dio-4.0.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "dropdown_button2",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/dropdown_button2-1.9.2",
       "packageUri": "lib/",
@@ -225,7 +237,7 @@
     },
     {
       "name": "flutter_launcher_icons",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_launcher_icons-0.9.3",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_launcher_icons-0.11.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -378,6 +390,12 @@
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.4",
       "packageUri": "lib/",
       "languageVersion": "2.16"
+    },
+    {
+      "name": "json_annotation",
+      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/json_annotation-4.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
     },
     {
       "name": "lints",
@@ -848,7 +866,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2023-01-11T09:56:25.057979Z",
+  "generated": "2023-01-12T06:40:21.092387Z",
   "generator": "pub",
   "generatorVersion": "2.18.5"
 }

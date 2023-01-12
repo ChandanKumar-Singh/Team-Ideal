@@ -15,6 +15,8 @@ class AppConst {
 
   ///
   static const String edit_profile = 'edit_profile.php?';
+  static const String form1Upload = 'api_save_empprofile.php';
+  static const String form6Upload = 'api_save_formupld.php';
 
 
   static const String appname = 'Team Ideal Pvt. Ltd';

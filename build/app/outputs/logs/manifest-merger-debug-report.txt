@@ -99,7 +99,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\PC
 	android:roundIcon
 		ADDED from D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:10:8-53
 	android:icon
-		ADDED from D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:9:9-43
+		ADDED from D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:9:9-45
 activity#com.hrms.team_ideal.MainActivity
 ADDED from D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:11:9-40:20
 	android:launchMode

@@ -1,13 +1,18 @@
+import 'dart:io';
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dakshattendance/AppConst/AppConst.dart';
 import 'package:dakshattendance/Model/ProfileModel.dart';
 import 'package:dakshattendance/Model/ProfileModel.dart';
 import 'package:dakshattendance/Model/WorkingFor.dart';
+import 'package:dakshattendance/screens/ManageEmployees/ManageEmployees.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'dart:convert';
 
 import 'package:api_cache_manager/models/cache_db_model.dart';
 import 'package:api_cache_manager/utils/cache_manager.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -66,7 +71,10 @@ class EmployeeInfoProvider extends ChangeNotifier {
     // // debugPrint('testing getProfileData ------ >getVehicles ');
     loadingProfileData = false;
     notifyListeners();
+    // Navigator.push(Get.context!, MaterialPageRoute(builder: (context)=>ManageEmployees()));
   }
+
+  List<MapEntry<String, TextEditingController>> form1controllers = [];
 
   bool loadingStates = false;
   List<String> states = [];
@@ -215,14 +223,21 @@ class EmployeeInfoProvider extends ChangeNotifier {
   ///working for
   bool loadingZones = false;
   List<String> zones = [];
+  String? selectedState;
+  String? selectedPC;
+  String? selectedWorkingCompany;
+  String? selectedZone;
+  String? selectedAccStatus;
   Future<void> getZones() async {
     var response;
     try {
       loadingZones = true;
+      zones.clear();
       notifyListeners();
       Map<String, String> headers = {"Accept": "*/*"};
       var url = AppConst.baseUrl +
-          'master.php?func_name=get_zones&working_for=YJ FOODS PRIVATE LIMITED';
+          // 'master.php?func_name=get_zones&working_for=YJ FOODS PRIVATE LIMITED';
+          'master.php?func_name=get_zones&working_for=$selectedWorkingCompany';
       bool cacheExist = await APICacheManager().isAPICacheKeyExist('zones');
       notifyListeners();
       var res = await http.get(Uri.parse(url), headers: headers);
@@ -242,7 +257,6 @@ class EmployeeInfoProvider extends ChangeNotifier {
       response = jsonDecode(response);
       debugPrint('$tag getZones total ${response} ${response.runtimeType}');
       if (response != null) {
-        zones.clear();
         response.forEach((element) {
           zones.add(element['zone_nm']);
         });
@@ -258,6 +272,167 @@ class EmployeeInfoProvider extends ChangeNotifier {
   }
 
   ///Step 2
-  List<List> fieldControl = [];
-  List<SingleValueDropDownController> controllers = [];
+  List<List> fieldControl2 = [];
+  List<SingleValueDropDownController> field2controllers = [];
+  String? selectGender;
+  String? interviewed;
+  String? treatment;
+  bool isUploadingField1andForm2 = false;
+  Future<void> uploadField1andForm2Docs() async {
+    var url = AppConst.baseUrl + AppConst.form1Upload;
+    var header = {"Accept": "*/*"};
+
+    try {
+      isUploadingField1andForm2 = true;
+      notifyListeners();
+      var newData = {};
+      print(form1controllers.length);
+      for (var i = 0; i < form1controllers.length; i++) {
+        newData.addIf(
+            true, form1controllers[i].key, form1controllers[i].value.text);
+      }
+      newData.addIf(true, 'edit', profileData!.employee!.empCode ?? '');
+      newData.addIf(true, 'state', selectedState ?? '');
+      newData.addIf(true, 'principal_comp', selectedPC ?? '');
+      newData.addIf(true, 'working_for', selectedWorkingCompany ?? '');
+      newData.addIf(true, 'zone', selectedZone ?? '');
+      newData.addIf(true, 'account_status', selectedAccStatus ?? '');
+      print(
+          'result   uploadField1andForm2Docs-->h ${url} ${jsonEncode(newData)}');
+
+      var response = await http.post(Uri.parse(url),
+          headers: header, body: jsonEncode(newData));
+      print(
+          'result  got uploadField1andForm2Docs--> responseData ${response.body}');
+
+      var responseData;
+      if (response.body.isNotEmpty) {
+        responseData = jsonDecode(response.body);
+        print(
+            'result   uploadField1andForm2Docs --> responseData $responseData');
+        if (responseData['success']) {
+          fieldControl6.clear();
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.success,
+            autoHide: Duration(seconds: 3),
+            title: '\n\n${jsonDecode(responseData)['message']} \n',
+            autoDismiss: true,
+          ).show();
+          getProfileData();
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.success,
+            autoHide: Duration(seconds: 3),
+            title: '\n\n${jsonDecode(responseData)['message']} \n',
+            autoDismiss: true,
+          ).show().then((value) => Get.back());
+        } else {
+          AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.error,
+            autoHide: Duration(seconds: 3),
+            title: '\n\n${jsonDecode(responseData)['message']} \n',
+            autoDismiss: true,
+          ).show();
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    isUploadingField1andForm2 = false;
+    notifyListeners();
+  }
+
+  ///Step 3
+  List<EducationBoxModel> educations=[];
+
+  ///Step 6
+  Map<String, String> fieldControl6 = {};
+  bool isUploadingField6 = true;
+
+  Future<void> pickFiles({required String field}) async {
+    String fileName = '';
+
+    File? file;
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      file = File(result.files.single.path!);
+      fileName = file.path.split('/').last;
+      print(' picked file $file');
+      fieldControl6.addAll({field: file.path});
+      print(fieldControl6);
+    } else {
+      // User canceled the picker
+      print('could not pick file');
+      print('could not pick file');
+    }
+  }
+
+  Future<void> uploadField6Docs() async {
+    var url = AppConst.baseUrl + AppConst.form6Upload;
+    var header = {"Accept": "*/*"};
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(url),
+    );
+
+    try {
+      isUploadingField6 = true;
+      notifyListeners();
+      var data = {
+        "id": "1",
+        "emp_code": "123456",
+        "esicupld": "",
+        "form2upld": "",
+        "form11upld": "",
+        "tiplinfo": "",
+        "tiplkit": "123456-IMG20230112100423.jpg",
+        "panupld": "",
+        "aadharupld": "",
+        "cchqupld": "",
+        "reletterupld": "",
+        "pastcerupld": "",
+        "passportupld": "",
+        "addproofupld": ""
+      };
+      fieldControl6.entries.forEach((doc) async {
+        print('doc  $doc');
+        request.files
+            .add(await http.MultipartFile.fromPath(doc.key, doc.value));
+      });
+      request.fields['edit'] = '123456'.toString();
+      request.headers.addAll(header);
+      print('result   addLeave--> ${request.url} ${request.fields}');
+      var res = await request.send();
+      var responseData = await res.stream.toBytes();
+      var result = String.fromCharCodes(responseData);
+      print('result   addLeave--> ${request.url} ${request.fields}');
+      print('result   addLeave--> $result');
+      if (jsonDecode(result)['success']) {
+        fieldControl6.clear();
+        getProfileData();
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          autoHide: Duration(seconds: 3),
+          title: '\n\n${jsonDecode(result)['message']} \n',
+          autoDismiss: true,
+        ).show();
+      } else {
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.error,
+          autoHide: Duration(seconds: 3),
+          title: '\n\n${jsonDecode(result)['message']} \n',
+          autoDismiss: true,
+        ).show();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    isUploadingField6 = false;
+    notifyListeners();
+  }
 }

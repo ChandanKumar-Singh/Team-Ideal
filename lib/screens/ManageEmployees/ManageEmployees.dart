@@ -1,12 +1,19 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:dakshattendance/Model/ProfileModel.dart';
 import 'package:dakshattendance/const/global.dart';
 import 'package:dakshattendance/provider/EmployeeInfoProvider/EmployeeInfoProvider.dart';
+import 'package:dio/dio.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_stepper/easy_stepper.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class ManageEmployees extends StatefulWidget {
@@ -36,89 +43,112 @@ class _ManageEmployeesState extends State<ManageEmployees> {
   ///Form Keys
   final GlobalKey<FormState> step1FormKey = GlobalKey();
   final GlobalKey<FormState> step2FormKey = GlobalKey();
+  final GlobalKey<FormState> step3FormKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Profile'),
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              EasyStepper(
-                activeStep: activeStep,
-                lineLength: 100,
-                lineDotRadius: 3,
-                lineSpace: 5,
-                lineType: LineType.normal,
-                lineColor: AppColor.appColor2.withOpacity(0.7),
-                borderThickness: 5,
-                padding: 15,
-                loadingAnimation: 'assets/loading_cicle.json',
-                steps: const [
-                  EasyStep(
-                    icon: Icon(CupertinoIcons.cart),
-                    title: 'Employee Profile',
-                    lineText: 'Add Education',
-                  ),
-                  EasyStep(
-                    icon: Icon(CupertinoIcons.cart),
-                    title: 'Dependencies',
-                    lineText: 'Multi Forms',
-                  ),
-                  EasyStep(
-                    icon: Icon(CupertinoIcons.info),
-                    title: 'Education',
-                    lineText: 'Employment Info',
-                  ),
-                  EasyStep(
-                    icon: Icon(CupertinoIcons.cart_fill_badge_plus),
-                    title: 'Employment Details',
-                    lineText: 'Add Reference',
-                  ),
-                  EasyStep(
-                    icon: Icon(CupertinoIcons.money_dollar),
-                    title: 'References',
-                    lineText: 'Add Documents',
-                  ),
-                  EasyStep(
-                    icon: Icon(Icons.file_present_rounded),
-                    title: 'Document Uploads',
-                  ),
-                ],
-                onStepReached: (index) => setState(() => activeStep = index),
-              ),
-              const SizedBox(height: 5),
-              Expanded(
-                child: ep.loadingProfileData
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: activeStep == 0
-                            ? step1FieldControl(ep)
-                            : activeStep == 1
-                                ? step2FieldControl(ep)
-                                : activeStep == 2
-                                    ? EducationCard()
-                                    : activeStep == 3
-                                        ? PreviousJobCard()
-                                        : activeStep == 4
-                                            ? ReferencesForm()
-                                            : SizedBox(),
-                      ),
-              ),
-            ],
+    return WillPopScope(
+      onWillPop: () async {
+        bool willExit = false;
+        return AwesomeDialog(
+            context: Get.context!,
+            dialogType: DialogType.warning,
+            autoHide: Duration(seconds: 3),
+            title: '\n\n  Form Saved? \n',
+            autoDismiss: true,
+            btnCancelText: 'No',
+            btnOkText: 'Yes',
+            btnCancelOnPress: () {
+              willExit = false;
+            },
+            btnOkOnPress: () {
+              willExit = true;
+            }).show().then((value) => willExit);
+        debugPrint('willExit $willExit');
+      },
+      child: Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Profile'),
           ),
-        ),
-        floatingActionButton: floatingButtons(),
-      );
-    });
+          body: SafeArea(
+            child: Column(
+              children: [
+                EasyStepper(
+                  activeStep: activeStep,
+                  lineLength: 100,
+                  lineDotRadius: 3,
+                  lineSpace: 5,
+                  lineType: LineType.normal,
+                  lineColor: AppColor.appColor2.withOpacity(0.7),
+                  borderThickness: 5,
+                  padding: 15,
+                  loadingAnimation: 'assets/loading_cicle.json',
+                  steps: const [
+                    EasyStep(
+                      icon: Icon(CupertinoIcons.cart),
+                      title: 'Employee Profile',
+                      lineText: 'Add Education',
+                    ),
+                    EasyStep(
+                      icon: Icon(CupertinoIcons.cart),
+                      title: 'Dependencies',
+                      lineText: 'Multi Forms',
+                    ),
+                    EasyStep(
+                      icon: Icon(CupertinoIcons.info),
+                      title: 'Education',
+                      lineText: 'Employment Info',
+                    ),
+                    EasyStep(
+                      icon: Icon(CupertinoIcons.cart_fill_badge_plus),
+                      title: 'Employment Details',
+                      lineText: 'Add Reference',
+                    ),
+                    EasyStep(
+                      icon: Icon(CupertinoIcons.money_dollar),
+                      title: 'References',
+                      lineText: 'Add Documents',
+                    ),
+                    EasyStep(
+                      icon: Icon(Icons.file_present_rounded),
+                      title: 'Document Uploads',
+                    ),
+                  ],
+                  onStepReached: (index) => setState(() => activeStep = index),
+                ),
+                const SizedBox(height: 5),
+                Expanded(
+                  child: ep.loadingProfileData
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: activeStep == 0
+                              ? step1FieldControl(ep)
+                              : activeStep == 1
+                                  ? step2FieldControl(ep)
+                                  : activeStep == 2
+                                      ? EducationCard()
+                                      : activeStep == 3
+                                          ? PreviousJobCard()
+                                          : activeStep == 4
+                                              ? ReferencesForm()
+                                              : activeStep == 5
+                                                  ? step6FieldControl(ep)
+                                                  : SizedBox(),
+                        ),
+                ),
+              ],
+            ),
+          ),
+          floatingActionButton: floatingButtons(ep),
+        );
+      }),
+    );
   }
 
-  Padding floatingButtons() {
+  Padding floatingButtons(EmployeeInfoProvider ep) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
@@ -147,11 +177,15 @@ class _ManageEmployeesState extends State<ManageEmployees> {
               } else if (activeStep == 1) {
                 bool? validate = step2FormKey.currentState?.validate();
                 print('$activeStep validate $validate');
+                await ep.uploadField1andForm2Docs();
                 if (validate != null && validate) {
                   setState(() {
-                    activeStep++;
+                    // activeStep++;
                   });
                 }
+              } else if (activeStep == 5) {
+                // bool? validate = step2FormKey.currentState?.validate();
+                await ep.uploadField6Docs();
               } else {
                 setState(() {
                   activeStep++;
@@ -173,47 +207,71 @@ class _ManageEmployeesState extends State<ManageEmployees> {
       return FieldControl(
         formKey: step1FormKey,
         fieldControle: [
-          ['First Name', emp.firstNm ?? '', false, true],
-          ['Middle Name', emp.middleNm ?? '', false, false],
-          ['Last Name', emp.lastNm ?? '', false, false],
-          ['Employee Code', emp.empCode ?? '', true, false],
-          ['Password', emp.password ?? '', true, false],
-          ['Email Id', emp.email ?? '', false, false],
-          ['Official Email Id', emp.officialemail ?? '', false, false],
-          ['Alternate Email Id', emp.altemail ?? '', false, false],
-          ['Official Mobile No.', '', false, false],
-          ['Alternate Mobile No.', emp.altmobileno ?? '', false, false],
-          ['Current Address', emp.curaddress ?? '', false, false],
-          ['Grade', emp.grade ?? '', false, false],
-          ['PF No', emp.panNo ?? '', false, false],
-          ['ESIC No', emp.esicNo ?? '', false, false],
-          ['Education', emp.education ?? '', false, false],
-          ['DOB', emp.dob, false, false, 'date'],
-          ['Age', emp.age ?? '', false, false],
-          ['Contract End Date', emp.cenddt ?? '', true, false, 'date'],
-          // ['State', emp.state ?? '', false, false],
-          ['Designation', emp.designation ?? '', true, false],
-          ['Joining Date', emp.joindt, true, false, 'date'],
-          ['Resignation Date', emp.resigndt, false, false, 'date'],
-          ['Leave Date', emp.leavedt, false, false, 'date'],
-          ['Location', emp.location ?? '', false, false],
-          ['Bank Name', emp.banknm ?? '', false, false],
-          ['Account No', emp.accno ?? '', false, false],
-          ['Bank City', emp.bankcity ?? '', false, false],
-          ['Branch', emp.branch ?? '', false, false],
-          ['IFSC Code', emp.ifsc ?? '', false, false],
-          ['Aadhar Card No', emp.aadharno ?? '', false, false],
-          ['Remarks', emp.remarks ?? '', false, false],
-          ['Supervisor', emp.supervisor ?? '', false, false],
-          ['UAN No', '', false, false],
-          ['PAN NO', emp.panNo ?? '', false, false],
-          ['Reporting HR Name', emp.rephrName ?? '', false, false],
-          ['NUMBER', '', false, false],
-          ['Nominee Name', emp.nomiName ?? '', false, false],
-          ['Nominee Mobile No', emp.nomiNo ?? '', false, false],
-          ['Nominee Relationship', emp.nomiRel ?? '', false, false],
-          ['Nominee Date of proof', emp.nomineedt, false, false, 'date'],
-          ['Nominee Address', emp.nomiAdd ?? '', false, false],
+          ['First Name', emp.firstNm ?? '', false, true, 'first_nm'],
+          ['Middle Name', emp.middleNm ?? '', false, false, 'middle_nm'],
+          ['Last Name', emp.lastNm ?? '', false, false, 'last_nm'],
+          ['Employee Code', emp.empCode ?? '', true, false, 'emp_code'],
+          ['Password', emp.password ?? '', true, false, 'fdfhdsds'],
+          ['Email Id', emp.email ?? '', false, false, 'email'],
+          [
+            'Official Email Id',
+            emp.officialemail ?? '',
+            false,
+            false,
+            'officialemail'
+          ],
+          ['Alternate Email Id', emp.altemail ?? '', false, false, 'altemail'],
+          [
+            'Official Mobile No.',
+            'Official Mobile No. ********',
+            false,
+            false,
+            'off_mob_no'
+          ],
+          [
+            'Alternate Mobile No.',
+            emp.altmobileno ?? '',
+            false,
+            false,
+            'altmobileno'
+          ],
+          ['Current Address', emp.curaddress ?? '', false, false, 'curaddress'],
+          ['Grade', emp.grade ?? '', false, false, 'grade'],
+          ['PF No', emp.panNo ?? '', false, false, 'pfno'],
+          ['ESIC No', emp.esicNo ?? '', false, false, 'esic_no'],
+          ['Education', emp.education ?? '', false, false, 'education'],
+          ['DOB', emp.dob, false, false, 'dob'],
+          ['Age', emp.age ?? '', false, false, 'age'],
+          ['Contract End Date', emp.cenddt ?? '', true, false, 'cenddt'],
+          // ['State', emp.state ?? '', false, false,'erefefced],
+          ['Designation', emp.designation ?? '', true, false, 'designation'],
+          ['Joining Date', emp.joindt, true, false, 'joindt'],
+          ['Resignation Date', emp.resigndt, false, false, 'resigndt'],
+          ['Leave Date', emp.leavedt, false, false, 'leavedt'],
+          ['Location', emp.location ?? '', false, false, 'location'],
+          ['Bank Name', emp.banknm ?? '', false, false, 'banknm'],
+          ['Account No', emp.accno ?? '', false, false, 'accno'],
+          ['Bank City', emp.bankcity ?? '', false, false, 'bankcity'],
+          ['Branch', emp.branch ?? '', false, false, 'branch'],
+          ['IFSC Code', emp.ifsc ?? '', false, false, 'ifsc'],
+          ['Aadhar Card No', emp.aadharno ?? '', false, false, 'aadharno'],
+          ['Remarks', emp.remarks ?? '', false, false, 'remarks'],
+          ['Supervisor', emp.supervisor ?? '', false, false, 'supervisor'],
+          ['UAN No', 'uan_no', false, false, 'uan_no'],
+          ['PAN NO', emp.panNo ?? '', false, false, 'pan_no'],
+          [
+            'Reporting HR Name',
+            emp.rephrName ?? '',
+            false,
+            false,
+            'rephr_name'
+          ],
+          ['NUMBER', emp.mobileno, false, false, 'mobileno'],
+          ['Nominee Name', emp.nomiName ?? '', false, false, 'nomi_name'],
+          ['Nominee Mobile No', emp.nomiNo ?? '', false, false, 'nomi_no'],
+          ['Nominee Relationship', emp.nomiRel ?? '', false, false, 'nomi_rel'],
+          ['Nominee Date of proof', emp.nomineedt, false, false, 'nomineedt'],
+          ['Nominee Address', emp.nomiAdd ?? '', false, false, 'nomi_add'],
         ],
       );
     }
@@ -265,7 +323,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
               : null,
           false,
           true,
-          ep.zones,
+          ep.workingForCompanies,
         ],
         [
           'Account Status',
@@ -279,6 +337,13 @@ class _ManageEmployeesState extends State<ManageEmployees> {
           ['Active', 'Deactive'],
         ],
       ],
+    );
+  }
+
+  Widget step6FieldControl(EmployeeInfoProvider ep) {
+    return FieldControl6(
+      formKey: step3FormKey,
+      docs: ep.profileData!.documents!,
     );
   }
 
@@ -310,13 +375,16 @@ class _FieldControlState extends State<FieldControl> {
   bool _isLoading = false;
   ScrollController scrollController = ScrollController();
 
-  List<TextEditingController> controllers = [];
   List<TextInputType> inputTypes = [];
 
   void initFields() {
+    var ep = Provider.of<EmployeeInfoProvider>(context, listen: false);
+    ep.form1controllers.clear();
+    ;
     for (var element in fieldControl) {
       print(element);
-      controllers.add(TextEditingController(text: '${element[1] ?? ''}'));
+      ep.form1controllers.add(MapEntry(
+          '${element[4]}', TextEditingController(text: '${element[1] ?? ''}')));
       if (element[1] != null) {
         inputTypes.add(element[1].runtimeType == 0.runtimeType
             ? TextInputType.number
@@ -325,7 +393,7 @@ class _FieldControlState extends State<FieldControl> {
     }
     _isLoading = false;
     setState(() {});
-    print('Field count is ${controllers.length}  ${inputTypes.length}');
+    print('Field count is ${ep.form1controllers.length}  ${inputTypes.length}');
   }
 
   @override
@@ -337,54 +405,57 @@ class _FieldControlState extends State<FieldControl> {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      controller: scrollController,
-      thickness: 15,
-      showTrackOnHover: true,
-      thumbVisibility: true,
-      interactive: true,
-      radius: const Radius.circular(10),
-      child: Form(
-        key: widget.formKey,
-        child: ListView(
-          controller: scrollController,
-          children: [
-            ...fieldControl.map((e) {
-              int i = fieldControl.indexOf(e);
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                child: CustomTextField(
-                  readOnly: fieldControl[i][2] ?? true,
-                  onChange: (val) {
-                    print(fieldControl[i][0].toString() +
-                        '  ---  $val ---' +
-                        controllers[i].text);
-                  },
-                  titleStyle: const TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.grey,
-                      fontSize: 20),
-                  lableStyle: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                  title: fieldControl[i][0],
-                  label: fieldControl[i][0],
-                  required: fieldControl[i][3],
-                  controller: controllers[i],
-                  inputType: inputTypes[i],
-                  formType:
-                      fieldControl[i].length > 4 ? fieldControl[i][4] : null,
-                ),
-              );
-            }),
-            SizedBox(
-              height: 100,
-            ),
-          ],
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      return Scrollbar(
+        controller: scrollController,
+        thickness: 15,
+        showTrackOnHover: true,
+        thumbVisibility: true,
+        interactive: true,
+        radius: const Radius.circular(10),
+        child: Form(
+          key: widget.formKey,
+          child: ListView(
+            controller: scrollController,
+            children: [
+              ...fieldControl.map((e) {
+                int i = fieldControl.indexOf(e);
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  child: CustomTextField(
+                    readOnly: fieldControl[i][2] ?? true,
+                    onChange: (val) {
+                      print(fieldControl[i][0].toString() +
+                          '  ---  $val ---' +
+                          ep.form1controllers[i].value.text);
+                    },
+                    titleStyle: const TextStyle(
+                        fontWeight: FontWeight.normal,
+                        color: Colors.grey,
+                        fontSize: 20),
+                    lableStyle: const TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                    title: fieldControl[i][0],
+                    label: fieldControl[i][0],
+                    required: fieldControl[i][3],
+                    controller: ep.form1controllers[i].value,
+                    inputType: inputTypes[i],
+                    formType:
+                        fieldControl[i].length > 4 ? fieldControl[i][4] : null,
+                  ),
+                );
+              }),
+              SizedBox(
+                height: 100,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
@@ -403,14 +474,10 @@ class _FieldControl2State extends State<FieldControl2> {
   bool _isLoading = false;
   ScrollController scrollController = ScrollController();
 
-  String selectGender = 'male';
-  bool interviewed = false;
-  bool treatment = false;
-
   void initFields(EmployeeInfoProvider ep) {
-    for (var element in ep.fieldControl) {
+    for (var element in ep.fieldControl2) {
       print(element);
-      ep.controllers.add(
+      ep.field2controllers.add(
         SingleValueDropDownController(
           data: element[1] != null
               ? DropDownValueModel(
@@ -419,15 +486,39 @@ class _FieldControl2State extends State<FieldControl2> {
         ),
       );
     }
+    ep.profileData!.employee!.state != null
+        ? ep.selectedState = ep.profileData!.employee!.state
+        : null;
+    ep.profileData!.employee!.principalComp != null
+        ? ep.selectedPC = ep.profileData!.employee!.principalComp
+        : null;
+    ep.profileData!.employee!.workingFor != null
+        ? ep.selectedWorkingCompany = ep.profileData!.employee!.workingFor
+        : null;
+    ep.profileData!.employee!.zone != null
+        ? ep.selectedZone = ep.profileData!.employee!.zone
+        : null;
+    ep.profileData!.employee!.accountStatus != null
+        ? ep.selectedAccStatus = ep.profileData!.employee!.accountStatus
+        : null;
     _isLoading = false;
     setState(() {});
+    if (ep.profileData!.employee!.gender != null) {
+      ep.selectGender = ep.profileData!.employee!.gender;
+    }
+    if (ep.profileData!.employee!.interviewed != null) {
+      ep.interviewed = ep.profileData!.employee!.interviewed;
+    }
+    if (ep.profileData!.employee!.treatment != null) {
+      ep.treatment = ep.profileData!.employee!.treatment;
+    }
   }
 
   @override
   void initState() {
     super.initState();
     var ep = Provider.of<EmployeeInfoProvider>(context, listen: false);
-    ep.fieldControl = widget.fieldControl;
+    ep.fieldControl2 = widget.fieldControl;
     initFields(ep);
   }
 
@@ -435,6 +526,9 @@ class _FieldControl2State extends State<FieldControl2> {
   Widget build(BuildContext context) {
     print(widget.fieldControl[1][4]);
     return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      // debugPrint('${ep.profileData!.employee!.gender}');
+      // debugPrint('${ep.profileData!.employee!.interviewed}');
+      // debugPrint('${ep.profileData!.employee!.treatment}');
       return Scrollbar(
         controller: scrollController,
         thickness: 15,
@@ -447,45 +541,63 @@ class _FieldControl2State extends State<FieldControl2> {
           child: ListView(
             controller: scrollController,
             children: [
-              ...ep.fieldControl.map((e) {
-                int i = ep.fieldControl.indexOf(e);
+              ...ep.fieldControl2.map((e) {
+                int i = ep.fieldControl2.indexOf(e);
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   child: SizedBox(
                     height: 110,
                     child: CustomDropDownField(
-                      title: ep.fieldControl[i][0],
+                      title: ep.fieldControl2[i][0],
                       options: <DropDownValueModel>[
                         if (i == 0)
-                          ...ep.fieldControl[i][4].map((state) =>
+                          ...ep.fieldControl2[i][4].map((state) =>
                               DropDownValueModel(name: state, value: state)),
                         if (i == 1)
-                          ...ep.fieldControl[i][4].map((company) =>
+                          ...ep.fieldControl2[i][4].map((company) =>
                               DropDownValueModel(
                                   name: company, value: company)),
                         if (i == 2)
-                          ...ep.fieldControl[i][4].map((company) =>
+                          ...ep.fieldControl2[i][4].map((company) =>
                               DropDownValueModel(
                                   name: company.compNm, value: company.id)),
                         if (i == 3)
                           ...ep.zones.map((zone) =>
                               DropDownValueModel(name: zone, value: zone)),
                         if (i == 4)
-                          ...ep.fieldControl[i][4].map((status) =>
+                          ...ep.fieldControl2[i][4].map((status) =>
                               DropDownValueModel(name: status, value: status)),
                       ],
                       onChange: (val) {
                         debugPrint(
-                            '${ep.fieldControl[i][0]}  ${ep.controllers[i].dropDownValue}  $val');
+                            '${ep.fieldControl2[i][0]}  ${ep.field2controllers[i].dropDownValue}  $val');
+                        if (i == 0) {
+                          ep.selectedState = val.value;
+                        }
+
+                        if (i == 1) {
+                          ep.selectedPC = val.value;
+                        }
+
                         if (i == 2) {
                           ep.getZones();
+                          ep.selectedZone = null;
+                          ep.field2controllers[3].dropDownValue = null;
+                        }
+
+                        if (i == 3) {
+                          ep.selectedZone = val.value;
+                        }
+
+                        if (i == 4) {
+                          ep.selectedAccStatus = val.value;
                         }
                       },
                       isEnabled: i == 3 ? ep.zones.length != 0 : null,
                       label: 'Select',
-                      required: ep.fieldControl[i][3],
-                      controller: ep.controllers[i],
+                      required: ep.fieldControl2[i][3],
+                      controller: ep.field2controllers[i],
                     ),
                   ),
                 );
@@ -494,7 +606,7 @@ class _FieldControl2State extends State<FieldControl2> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Select Gender',
+                    'Select Gender:',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -502,19 +614,21 @@ class _FieldControl2State extends State<FieldControl2> {
                   RadioListTile<String>(
                       value: 'male',
                       title: Text('Male'),
-                      groupValue: selectGender,
+                      groupValue: ep.selectGender,
                       onChanged: (val) {
                         setState(() {
-                          selectGender = val!;
+                          ep.selectGender = val!;
+                          ep.profileData!.employee!.gender = ep.selectGender;
                         });
                       }),
                   RadioListTile<String>(
                       value: 'female',
                       title: Text('Female'),
-                      groupValue: selectGender,
+                      groupValue: ep.selectGender,
                       onChanged: (val) {
                         setState(() {
-                          selectGender = val!;
+                          ep.selectGender = val!;
+                          ep.profileData!.employee!.gender = ep.selectGender;
                         });
                       }),
                 ],
@@ -523,27 +637,31 @@ class _FieldControl2State extends State<FieldControl2> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Have you been interviewed previously for employment in this company? ',
+                    'Have you been  ep.interviewed previously for employment in this company? ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  RadioListTile<bool>(
-                      value: true,
+                  RadioListTile<String>(
+                      value: 'Yes',
                       title: Text('Yes'),
-                      groupValue: interviewed,
+                      groupValue: ep.interviewed,
                       onChanged: (val) {
                         setState(() {
-                          interviewed = val!;
+                          ep.interviewed = val!;
+                          ep.profileData!.employee!.interviewed =
+                              ep.interviewed;
                         });
                       }),
-                  RadioListTile<bool>(
-                      value: false,
+                  RadioListTile<String>(
+                      value: 'No',
                       title: Text('No'),
-                      groupValue: interviewed,
+                      groupValue: ep.interviewed,
                       onChanged: (val) {
                         setState(() {
-                          interviewed = val!;
+                          ep.interviewed = val!;
+                          ep.profileData!.employee!.interviewed =
+                              ep.interviewed;
                         });
                       }),
                 ],
@@ -557,22 +675,24 @@ class _FieldControl2State extends State<FieldControl2> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  RadioListTile<bool>(
-                      value: true,
+                  RadioListTile<String>(
+                      value: 'Yes',
                       title: Text('Yes'),
-                      groupValue: treatment,
+                      groupValue: ep.treatment,
                       onChanged: (val) {
                         setState(() {
-                          treatment = val!;
+                          ep.treatment = val!;
+                          ep.profileData!.employee!.treatment = ep.treatment;
                         });
                       }),
-                  RadioListTile<bool>(
-                      value: false,
+                  RadioListTile<String>(
+                      value: 'No',
                       title: Text('No'),
-                      groupValue: treatment,
+                      groupValue: ep.treatment,
                       onChanged: (val) {
                         setState(() {
-                          treatment = val!;
+                          ep.treatment = val!;
+                          ep.profileData!.employee!.treatment = ep.treatment;
                         });
                       }),
                   Text(
@@ -582,6 +702,183 @@ class _FieldControl2State extends State<FieldControl2> {
                   ),
                 ],
               ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}
+
+class FieldControl6 extends StatefulWidget {
+  const FieldControl6({Key? key, required this.docs, required this.formKey})
+      : super(key: key);
+  final Documents docs;
+  final GlobalKey<FormState> formKey;
+
+  @override
+  State<FieldControl6> createState() => _FieldControl6State();
+}
+
+class _FieldControl6State extends State<FieldControl6> {
+  late Documents docs;
+  ScrollController scrollController = ScrollController();
+
+  void initFields(EmployeeInfoProvider ep) {
+    // ep.fieldControl6.clear();
+    // widget.docs.toJson().forEach((k, v) {
+    //   ep.fieldControl6.addAll({k: v.toString()});
+    // });
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    var ep = Provider.of<EmployeeInfoProvider>(context, listen: false);
+    initFields(ep);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      // debugPrint('${ep.profileData!.employee!.gender}');
+      // debugPrint('${ep.profileData!.employee!.interviewed}');
+      // debugPrint('${ep.profileData!.employee!.treatment}');
+      return Scrollbar(
+        controller: scrollController,
+        thickness: 15,
+        showTrackOnHover: true,
+        thumbVisibility: true,
+        interactive: true,
+        radius: const Radius.circular(10),
+        child: Form(
+          key: widget.formKey,
+          child: ListView(
+            controller: scrollController,
+            children: [
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Forms',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.grey),
+                      ),
+                      SizedBox(height: 10),
+                      DownloadAndUploadDoc(
+                          title: 'ESIC Form Download',
+                          field: 'esicupld',
+                          type: 'sample',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'ESIC Form Download',
+                          field: 'form2upld',
+                          type: 'sample',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'ESIC Form Download',
+                          field: 'form11upld',
+                          type: 'sample',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'ESIC Form Download',
+                          field: 'tiplinfo',
+                          type: 'sample',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'ESIC Form Download',
+                          field: 'tiplkit',
+                          type: 'sample',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Documents',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.grey),
+                      ),
+                      SizedBox(height: 10),
+                      DownloadAndUploadDoc(
+                          title: 'Pan Card',
+                          field: 'panupld',
+                          type: 'doc',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'EAadhar Card',
+                          field: 'aadharupld',
+                          type: 'doc',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'Cancel Chq',
+                          field: 'cchqupld',
+                          type: 'doc',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'Relieving Letter of Last Employment	',
+                          field: 'reletterupld',
+                          type: 'doc',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'Last Past Examination Certificate	',
+                          field: 'pastcerupld',
+                          type: 'doc',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'Passport Size Photo	',
+                          field: 'passportupld',
+                          type: 'doc',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                      DownloadAndUploadDoc(
+                          title: 'Address Proof	',
+                          field: 'addproofupld',
+                          type: 'doc',
+                          url:
+                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 150),
             ],
           ),
         ),
@@ -775,54 +1072,56 @@ class _CustomDropDownFieldState extends State<CustomDropDownField> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.title != null)
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.title!,
-                    style: widget.titleStyle ??
-                        const TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                  ),
-                )
-              ],
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      return Scaffold(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.title != null)
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.title!,
+                      style: widget.titleStyle ??
+                          const TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                    ),
+                  )
+                ],
+              ),
+            const SizedBox(height: 5),
+            DropDownTextField(
+              // initialValue: "name4",
+              isEnabled: widget.isEnabled ?? true,
+              controller: _cnt,
+              clearOption: true,
+              enableSearch: true,
+              clearIconProperty: IconProperty(color: Colors.green),
+              searchDecoration: InputDecoration(hintText: widget.label),
+              validator: (value) {
+                debugPrint('validate $value');
+                if (value == null || value == '') {
+                  return "Required field";
+                } else {
+                  return null;
+                }
+              },
+              dropDownItemCount: 6,
+              autovalidateMode: AutovalidateMode.always,
+              dropDownList: widget.options,
+              onChanged: (val) {
+                widget.onChange(val);
+                ep.selectedWorkingCompany = val.name;
+                print(val.runtimeType);
+              },
             ),
-          const SizedBox(height: 5),
-          DropDownTextField(
-            // initialValue: "name4",
-            isEnabled: widget.isEnabled ?? true,
-            controller: _cnt,
-            clearOption: true,
-            enableSearch: true,
-            clearIconProperty: IconProperty(color: Colors.green),
-            searchDecoration: InputDecoration(hintText: widget.label),
-            validator: (value) {
-              debugPrint('validate $value');
-              if (value == null || value == '') {
-                return "Required field";
-              } else {
-                return null;
-              }
-            },
-
-            dropDownItemCount: 6,
-            autovalidateMode: AutovalidateMode.always,
-            dropDownList: widget.options,
-            onChanged: (val) {
-              widget.onChange(val);
-              print(val.runtimeType);
-            },
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -834,109 +1133,109 @@ class EducationCard extends StatefulWidget {
 }
 
 class _EducationCardState extends State<EducationCard> {
-  Set<EducationBoxModel> educations = {};
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ...educations.map((e) {
-          return SizedBox(
-            // height: 300,
-            child: Card(
-              // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
-              elevation: 5,
-              shadowColor: Colors.red,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: Container(
-                padding: EdgeInsets.all(8),
-                child: Form(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            '# ${e.id}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      return ListView(
+        children: [
+          ...ep.educations.map((e) {
+            return SizedBox(
+              // height: 300,
+              child: Card(
+                // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
+                elevation: 5,
+                shadowColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  child: Form(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Form ${e.id}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          Spacer(),
-                          TextButton.icon(
-                            onPressed: () async {
-                              setState(() {
-                                educations.removeWhere(
-                                    (element) => element.id == e.id);
-                              });
-                            },
-                            icon: Icon(
-                              Icons.remove,
-                              color: Colors.red,
+                            Spacer(),
+                            TextButton.icon(
+                              onPressed: () async {
+                                setState(() {
+                                  ep.educations.removeWhere(
+                                      (element) => element.id == e.id);
+                                });
+                              },
+                              icon: Icon(
+                                Icons.remove,
+                                color: Colors.red,
+                              ),
+                              label: Text(
+                                'Remove',
+                                style: TextStyle(color: Colors.red),
+                              ),
                             ),
-                            label: Text(
-                              'Remove',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'Examination Passed',
-                        label: 'Examination Passed',
-                        required: true,
-                        controller: TextEditingController(text: e.id ?? ''),
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'Institution Name',
-                        label: 'Institution Name',
-                        required: true,
-                        controller: TextEditingController(text: e.id),
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'Year of Passing',
-                        label: 'Year of Passing',
-                        required: true,
-                        inputType: TextInputType.number,
-                        controller: TextEditingController(),
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'Passed % Obtained	',
-                        label: 'Passed % Obtained	',
-                        required: true,
-                        inputType: TextInputType.number,
-                        controller: TextEditingController(),
-                      ),
-                    ],
+                          ],
+                        ),
+                        CustomTextField(
+                          onChange: (val) {},
+                          title: 'Examination Passed',
+                          label: '',
+                          required: true,
+                          controller: TextEditingController(text: e.id ?? ''),
+                        ),
+                        CustomTextField(
+                          onChange: (val) {},
+                          title: 'Institution Name',
+                          label: '',
+                          required: true,
+                          controller: TextEditingController(text: e.id),
+                        ),
+                        CustomTextField(
+                          onChange: (val) {},
+                          title: 'Year of Passing',
+                          label: '',
+                          required: true,
+                          inputType: TextInputType.number,
+                          controller: TextEditingController(),
+                        ),
+                        CustomTextField(
+                          onChange: (val) {},
+                          title: 'Passed % Obtained	',
+                          label: '',
+                          required: true,
+                          inputType: TextInputType.number,
+                          controller: TextEditingController(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        }),
-        SizedBox(height: 20),
-        Row(
-          children: [
-            FloatingActionButton.extended(
-                onPressed: () {
-                  educations.add(
-                    EducationBoxModel(
-                      id: Random().nextInt(1000).toString(),
-                      examPassed: Random().nextInt(1000).toString(),
-                    ),
-                  );
-                  setState(() {});
-                },
-                label: Text('Add New'),
-                icon: Icon(Icons.add)),
-          ],
-        ),
-        SizedBox(height: 200),
-      ],
-    );
+            );
+          }),
+          SizedBox(height: 20),
+          Row(
+            children: [
+              FloatingActionButton.extended(
+                  onPressed: () {
+                    ep.educations.add(
+                      EducationBoxModel(
+                        id: (ep.educations.length + 1).toString(),
+                      ),
+                    );
+                    setState(() {});
+                  },
+                  label: Text('Add New'),
+                  icon: Icon(Icons.add)),
+            ],
+          ),
+          SizedBox(height: 200),
+        ],
+      );
+    });
   }
 }
 
@@ -1318,4 +1617,133 @@ class _ReferencesFormState extends State<ReferencesForm> {
       ],
     );
   }
+}
+
+class DownloadAndUploadDoc extends StatefulWidget {
+  const DownloadAndUploadDoc(
+      {Key? key,
+      required this.title,
+      required this.url,
+      required this.type,
+      required this.field})
+      : super(key: key);
+  final String title;
+  final String url;
+  final String type;
+  final String field;
+
+  @override
+  State<DownloadAndUploadDoc> createState() => _DownloadAndUploadDocState();
+}
+
+class _DownloadAndUploadDocState extends State<DownloadAndUploadDoc> {
+  bool selected = false;
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      bool selected = ep.fieldControl6.entries.any((element) =>
+          element.key == widget.field &&
+          element.value != null &&
+          element.value != '');
+      bool uploaded = ep.profileData!.documents!
+              .toJson()
+              .entries
+              .firstWhere((element) => element.key == widget.field)
+              .value !=
+          '';
+      return Row(
+        children: [
+          Expanded(
+            child: widget.type == 'doc'
+                ? OutlinedButton(
+                    onPressed: null,
+                    child: Text(widget.title,
+                        style: TextStyle(), overflow: TextOverflow.ellipsis),
+                  )
+                : ElevatedButton(
+                    onPressed: () async {
+                      downloadSample(widget.url);
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Text(widget.title,
+                                style: TextStyle(),
+                                overflow: TextOverflow.ellipsis)),
+                        Icon(Icons.download),
+                      ],
+                    ),
+                  ),
+            flex: 4,
+          ),
+          SizedBox(width: 20),
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      selected || uploaded ? Colors.green : Colors.grey[500]),
+              onPressed: () async {
+                await ep.pickFiles(field: widget.field);
+              },
+              child: Text(
+                  selected
+                      ? 'Img 34 34 dfewv g  fedd fdsfdgr edddf739.png'
+                      : uploaded
+                          ? 'Re-Upload'
+                          : 'Upload',
+                  style: TextStyle(),
+                  overflow: TextOverflow.ellipsis),
+            ),
+            flex: 3,
+          ),
+        ],
+      );
+    });
+  }
+}
+
+String? path;
+
+void downloadSample(String url) async {
+  try {
+    path = await getDownloadPath();
+    var filePath = '$path/${url.split('/').last}';
+    if (path != null) {
+      var response = await Dio().download(
+        'http://www.google.com',
+        filePath,
+        options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),
+        onReceiveProgress: ((pr, st) {
+          debugPrint('downloading file $url at $filePath  $pr  $st');
+        }),
+      );
+      print(response.data);
+      print(response.statusCode);
+      print(response.statusMessage);
+      Fluttertoast.showToast(msg: 'Download completed ${url.split('/').last}');
+    } else {
+      Fluttertoast.showToast(msg: 'Couldn\'t get download path');
+    }
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future<String?> getDownloadPath() async {
+  Directory? directory;
+  try {
+    if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    } else {
+      directory = Directory('/storage/emulated/0/Download');
+      // Put file in global download folder, if for an unknown reason it didn't exist, we fallback
+      // ignore: avoid_slow_async_io
+      if (!await directory.exists()) {
+        directory = await getExternalStorageDirectory();
+      }
+    }
+  } catch (err, stack) {
+    Fluttertoast.showToast(msg: "Cannot get download folder path");
+  }
+  return directory?.path;
 }

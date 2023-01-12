@@ -89,8 +89,8 @@
 52        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 52-->[androidx.core:core:1.8.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\8e86e615f21ac3758e97e94e18045107\core-1.8.0\AndroidManifest.xml:24:18-86
 53        android:debuggable="true"
-54        android:icon="@mipmap/ic_launcher"
-54-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:9:9-43
+54        android:icon="@mipmap/launcher_icon"
+54-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:9:9-45
 55        android:label="Team Ideal"
 55-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:8:9-35
 56        android:roundIcon="@mipmap/ic_launcher_round" >
