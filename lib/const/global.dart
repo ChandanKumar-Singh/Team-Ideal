@@ -9,6 +9,8 @@ import 'package:hive/hive.dart';
 class AppColor {
   static const Color appColor = Color(0xff7A6565);
   static const Color appColor2 = Color(0xff59286f);
+  // static const Color appColor2 = Color(0xff2e305a);
+  // static const Color appColor2 = Color(0xff0082FF);
   static const Color appColor3 = Color(0xffee6e0d);
   static const Color buttonColor = Color(0xff00BCFF);
   static const Color buttonColor2 = Color(0xff0082FF);
