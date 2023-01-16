@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dakshattendance/provider/EmployeeInfoProvider/EmployeeInfoProvider.dart';
 import 'package:dakshattendance/screens/homepage.dart';
 import 'package:dakshattendance/const/global.dart';
 import 'package:dakshattendance/model/login_model.dart';
@@ -7,6 +8,7 @@ import 'package:dakshattendance/repository/repository.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dakshattendance/shared_preference/pref_keys.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {

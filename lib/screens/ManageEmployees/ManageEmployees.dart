@@ -5,6 +5,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dakshattendance/Model/ProfileModel.dart';
 import 'package:dakshattendance/const/global.dart';
 import 'package:dakshattendance/provider/EmployeeInfoProvider/EmployeeInfoProvider.dart';
+import 'package:dakshattendance/screens/homepage.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,6 +50,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
     return WillPopScope(
       onWillPop: () async {
         bool willExit = false;
+
         return AwesomeDialog(
             context: Get.context!,
             dialogType: DialogType.warning,
@@ -61,6 +63,16 @@ class _ManageEmployeesState extends State<ManageEmployees> {
               willExit = false;
             },
             btnOkOnPress: () {
+              var ep =
+                  Provider.of<EmployeeInfoProvider>(context, listen: false);
+              ep.educations.clear();
+              ep.fieldControl2.clear();
+              ep.fieldControl6.clear();
+              ep.form1controllers.clear();
+              ep.form1controllers.clear();
+              ep.field2controllers.clear();
+              ep.emergencies.clear();
+              ep.employees.clear();
               willExit = true;
             }).show().then((value) => willExit);
         debugPrint('willExit $willExit');
@@ -85,27 +97,27 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   loadingAnimation: 'assets/loading_cicle.json',
                   steps: const [
                     EasyStep(
-                      icon: Icon(CupertinoIcons.cart),
+                      icon: Icon(CupertinoIcons.person),
                       title: 'Employee Profile',
                       lineText: 'Add Education',
                     ),
                     EasyStep(
-                      icon: Icon(CupertinoIcons.cart),
+                      icon: Icon(CupertinoIcons.drop),
                       title: 'Dependencies',
                       lineText: 'Multi Forms',
                     ),
                     EasyStep(
-                      icon: Icon(CupertinoIcons.info),
+                      icon: Icon(CupertinoIcons.book),
                       title: 'Education',
                       lineText: 'Employment Info',
                     ),
                     EasyStep(
-                      icon: Icon(CupertinoIcons.cart_fill_badge_plus),
+                      icon: Icon(CupertinoIcons.info),
                       title: 'Employment Details',
                       lineText: 'Add Reference',
                     ),
                     EasyStep(
-                      icon: Icon(CupertinoIcons.money_dollar),
+                      icon: Icon(CupertinoIcons.money_dollar_circle),
                       title: 'References',
                       lineText: 'Add Documents',
                     ),
@@ -177,22 +189,65 @@ class _ManageEmployeesState extends State<ManageEmployees> {
               } else if (activeStep == 1) {
                 bool? validate = step2FormKey.currentState?.validate();
                 print('$activeStep validate $validate');
-                await ep.uploadField1andForm2Docs();
-                if (validate != null && validate) {
-                  setState(() {
-                    // activeStep++;
-                  });
+                if (ep.approved) {
+                  await ep.uploadField1andForm2Docs();
                 }
-              } else if (activeStep == 5) {
-                // bool? validate = step2FormKey.currentState?.validate();
-                await ep.uploadField6Docs();
-              } else {
                 setState(() {
                   activeStep++;
                 });
+                // }
+              } else if (activeStep == 2) {
+                // bool? validate = step2FormKey.currentState?.validate();
+                // print('$activeStep validate $validate');
+                // if (validate != null && validate) {
+                if (ep.approved) {
+                  await ep.uploadField3();
+                }
+                setState(() {
+                  activeStep++;
+                });
+                // }
+              } else if (activeStep == 3) {
+                // bool? validate = step2FormKey.currentState?.validate();
+                // print('$activeStep validate $validate');
+                // if (validate != null && validate) {
+                if (ep.approved) {
+                  await ep.uploadField4();
+                }
+                setState(() {
+                  activeStep++;
+                });
+                // }
+              } else if (activeStep == 4) {
+                // bool? validate = step2FormKey.currentState?.validate();
+                // print('$activeStep validate $validate');
+                // if (validate != null && validate) {
+                if (ep.approved) {
+                  await ep.uploadField5();
+                }
+                setState(() {
+                  activeStep++;
+                });
+                // }
+              } else if (activeStep == 5) {
+                // bool? validate = step2FormKey.currentState?.validate();
+                if (ep.approved) {
+                  await ep.uploadField6Docs();
+                } else {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => MyHomepage()));
+                }
+              } else {
+                setState(() {
+                  activeStep < 6 ? activeStep++ : null;
+                });
               }
             },
-            label: Text(activeStep != 5 ? 'Next' : '📤 Update'),
+            label: Text(activeStep != 5
+                ? 'Next'
+                : ep.approved
+                    ? '📤 Update'
+                    : 'Go Back'),
           ),
         ],
       ),
@@ -206,72 +261,104 @@ class _ManageEmployeesState extends State<ManageEmployees> {
       var emp = ep.profileData!.employee!;
       return FieldControl(
         formKey: step1FormKey,
-        fieldControle: [
-          ['First Name', emp.firstNm ?? '', false, true, 'first_nm'],
-          ['Middle Name', emp.middleNm ?? '', false, false, 'middle_nm'],
-          ['Last Name', emp.lastNm ?? '', false, false, 'last_nm'],
-          ['Employee Code', emp.empCode ?? '', true, false, 'emp_code'],
-          ['Password', emp.password ?? '', true, false, 'fdfhdsds'],
-          ['Email Id', emp.email ?? '', false, false, 'email'],
+        fieldControl: [
+          ['First Name', emp.firstNm ?? '', false, true, 'first_nm', ''],
+          ['Middle Name', emp.middleNm ?? '', false, false, 'middle_nm', ''],
+          ['Last Name', emp.lastNm ?? '', false, false, 'last_nm', ''],
+          ['Employee Code', emp.empCode ?? '', true, false, 'emp_code', ''],
+          ['Password', emp.password ?? '', true, false, 'fdfhdsds', ''],
+          ['Email Id', emp.email ?? '', false, false, 'email', ''],
           [
             'Official Email Id',
             emp.officialemail ?? '',
             false,
             false,
-            'officialemail'
+            'officialemail',
+            ''
           ],
-          ['Alternate Email Id', emp.altemail ?? '', false, false, 'altemail'],
           [
-            'Official Mobile No.',
-            'Official Mobile No. ********',
+            'Alternate Email Id',
+            emp.altemail ?? '',
             false,
             false,
-            'off_mob_no'
+            'altemail',
+            ''
           ],
+          ['Official Mobile No.', '', false, false, 'off_mob_no', ''],
           [
             'Alternate Mobile No.',
             emp.altmobileno ?? '',
             false,
             false,
-            'altmobileno'
+            'altmobileno',
+            ''
           ],
-          ['Current Address', emp.curaddress ?? '', false, false, 'curaddress'],
-          ['Grade', emp.grade ?? '', false, false, 'grade'],
-          ['PF No', emp.panNo ?? '', false, false, 'pfno'],
-          ['ESIC No', emp.esicNo ?? '', false, false, 'esic_no'],
-          ['Education', emp.education ?? '', false, false, 'education'],
-          ['DOB', emp.dob, false, false, 'dob'],
-          ['Age', emp.age ?? '', false, false, 'age'],
-          ['Contract End Date', emp.cenddt ?? '', true, false, 'cenddt'],
-          // ['State', emp.state ?? '', false, false,'erefefced],
-          ['Designation', emp.designation ?? '', true, false, 'designation'],
-          ['Joining Date', emp.joindt, true, false, 'joindt'],
-          ['Resignation Date', emp.resigndt, false, false, 'resigndt'],
-          ['Leave Date', emp.leavedt, false, false, 'leavedt'],
-          ['Location', emp.location ?? '', false, false, 'location'],
-          ['Bank Name', emp.banknm ?? '', false, false, 'banknm'],
-          ['Account No', emp.accno ?? '', false, false, 'accno'],
-          ['Bank City', emp.bankcity ?? '', false, false, 'bankcity'],
-          ['Branch', emp.branch ?? '', false, false, 'branch'],
-          ['IFSC Code', emp.ifsc ?? '', false, false, 'ifsc'],
-          ['Aadhar Card No', emp.aadharno ?? '', false, false, 'aadharno'],
-          ['Remarks', emp.remarks ?? '', false, false, 'remarks'],
-          ['Supervisor', emp.supervisor ?? '', false, false, 'supervisor'],
-          ['UAN No', 'uan_no', false, false, 'uan_no'],
-          ['PAN NO', emp.panNo ?? '', false, false, 'pan_no'],
+          [
+            'Current Address',
+            emp.curaddress ?? '',
+            false,
+            false,
+            'curaddress',
+            ''
+          ],
+          ['Grade', emp.grade ?? '', false, false, 'grade', ''],
+          ['PF No', emp.panNo ?? '', false, false, 'pfno', ''],
+          ['ESIC No', emp.esicNo ?? '', false, false, 'esic_no', ''],
+          ['Education', emp.education ?? '', false, false, 'education', ''],
+          ['DOB', emp.dob, false, false, 'dob', ''],
+          ['Age', emp.age ?? '', false, false, 'age', ''],
+          ['Contract End Date', emp.cenddt ?? '', true, false, 'cenddt', ''],
+          // ['State', emp.state ?? '', false, false,'erefefced,'],
+          [
+            'Designation',
+            emp.designation ?? '',
+            true,
+            false,
+            'designation',
+            ''
+          ],
+          ['Joining Date', emp.joindt, true, false, 'joindt', 'date'],
+          ['Resignation Date', emp.resigndt, false, false, 'resigndt', ''],
+          ['Leave Date', emp.leavedt, false, false, 'leavedt', ''],
+          ['Location', emp.location ?? '', false, false, 'location', ''],
+          ['Bank Name', emp.banknm ?? '', false, false, 'banknm', ''],
+          ['Account No', emp.accno ?? '', false, false, 'accno', ''],
+          ['Bank City', emp.bankcity ?? '', false, false, 'bankcity', ''],
+          ['Branch', emp.branch ?? '', false, false, 'branch', ''],
+          ['IFSC Code', emp.ifsc ?? '', false, false, 'ifsc', ''],
+          ['Aadhar Card No', emp.aadharno ?? '', false, false, 'aadharno', ''],
+          ['Remarks', emp.remarks ?? '', false, false, 'remarks', ''],
+          ['Supervisor', emp.supervisor ?? '', false, false, 'supervisor', ''],
+          ['UAN No', 'uan_no', false, false, 'uan_no', ''],
+          ['PAN NO', emp.panNo ?? '', false, false, 'pan_no', ''],
           [
             'Reporting HR Name',
             emp.rephrName ?? '',
             false,
             false,
-            'rephr_name'
+            'rephr_name',
+            ''
           ],
-          ['NUMBER', emp.mobileno, false, false, 'mobileno'],
-          ['Nominee Name', emp.nomiName ?? '', false, false, 'nomi_name'],
-          ['Nominee Mobile No', emp.nomiNo ?? '', false, false, 'nomi_no'],
-          ['Nominee Relationship', emp.nomiRel ?? '', false, false, 'nomi_rel'],
-          ['Nominee Date of proof', emp.nomineedt, false, false, 'nomineedt'],
-          ['Nominee Address', emp.nomiAdd ?? '', false, false, 'nomi_add'],
+          ['NUMBER', emp.mobileno, false, false, 'mobileno', ''],
+          ['Nominee Name', emp.nomiName ?? '', false, false, 'nomi_name', ''],
+          ['Nominee Mobile No', emp.nomiNo ?? '', false, false, 'nomi_no', ''],
+          [
+            'Nominee Relationship',
+            emp.nomiRel ?? '',
+            false,
+            false,
+            'nomi_rel',
+            ''
+          ],
+          [
+            'Nominee Date of proof',
+            emp.nomineedt,
+            false,
+            false,
+            'nomineedt',
+            ''
+          ],
+          ['Nominee Address', emp.nomiAdd ?? '', false, false, 'nomi_add', ''],
         ],
       );
     }
@@ -311,7 +398,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   value: ep.profileData!.employee!.workingFor ?? '')
               : null,
           false,
-          true,
+          false,
           ep.workingForCompanies,
         ],
         [
@@ -322,7 +409,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   value: ep.profileData!.employee!.zone ?? '')
               : null,
           false,
-          true,
+          false,
           ep.workingForCompanies,
         ],
         [
@@ -333,7 +420,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   value: ep.profileData!.employee!.accountStatus ?? '')
               : null,
           false,
-          true,
+          false,
           ['Active', 'Deactive'],
         ],
       ],
@@ -359,11 +446,12 @@ class _ManageEmployeesState extends State<ManageEmployees> {
   // }
 }
 
+///step1
 class FieldControl extends StatefulWidget {
   const FieldControl(
-      {Key? key, required this.fieldControle, required this.formKey})
+      {Key? key, required this.fieldControl, required this.formKey})
       : super(key: key);
-  final List<List> fieldControle;
+  final List<List> fieldControl;
   final GlobalKey<FormState> formKey;
 
   @override
@@ -380,7 +468,7 @@ class _FieldControlState extends State<FieldControl> {
   void initFields() {
     var ep = Provider.of<EmployeeInfoProvider>(context, listen: false);
     ep.form1controllers.clear();
-    ;
+
     for (var element in fieldControl) {
       print(element);
       ep.form1controllers.add(MapEntry(
@@ -399,7 +487,7 @@ class _FieldControlState extends State<FieldControl> {
   @override
   void initState() {
     super.initState();
-    fieldControl = widget.fieldControle;
+    fieldControl = widget.fieldControl;
     initFields();
   }
 
@@ -408,7 +496,7 @@ class _FieldControlState extends State<FieldControl> {
     return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
       return Scrollbar(
         controller: scrollController,
-        thickness: 15,
+        thickness: 10,
         showTrackOnHover: true,
         thumbVisibility: true,
         interactive: true,
@@ -420,6 +508,10 @@ class _FieldControlState extends State<FieldControl> {
             children: [
               ...fieldControl.map((e) {
                 int i = fieldControl.indexOf(e);
+                debugPrint('fieldControl length is ${fieldControl.length}');
+                debugPrint('form type is ${fieldControl[i][4]}');
+                debugPrint('form type is ${fieldControl[i].length}');
+
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -436,15 +528,15 @@ class _FieldControlState extends State<FieldControl> {
                         fontSize: 20),
                     lableStyle: const TextStyle(
                         color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                        fontWeight: FontWeight.normal,
+                        fontSize: 16),
                     title: fieldControl[i][0],
                     label: fieldControl[i][0],
                     required: fieldControl[i][3],
                     controller: ep.form1controllers[i].value,
-                    inputType: inputTypes[i],
+                    // inputType: inputTypes[i],
                     formType:
-                        fieldControl[i].length > 4 ? fieldControl[i][4] : null,
+                        fieldControl[i].length >= 5 ? fieldControl[i][5] : null,
                   ),
                 );
               }),
@@ -458,6 +550,8 @@ class _FieldControlState extends State<FieldControl> {
     });
   }
 }
+
+///step2
 
 class FieldControl2 extends StatefulWidget {
   const FieldControl2(
@@ -531,7 +625,7 @@ class _FieldControl2State extends State<FieldControl2> {
       // debugPrint('${ep.profileData!.employee!.treatment}');
       return Scrollbar(
         controller: scrollController,
-        thickness: 15,
+        thickness: 10,
         showTrackOnHover: true,
         thumbVisibility: true,
         interactive: true,
@@ -602,104 +696,138 @@ class _FieldControl2State extends State<FieldControl2> {
                   ),
                 );
               }),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Stack(
                 children: [
-                  Text(
-                    'Select Gender:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select Gender:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      RadioListTile<String>(
+                          value: 'male',
+                          title: Text('Male'),
+                          groupValue: ep.selectGender,
+                          onChanged: (val) {
+                            setState(() {
+                              ep.selectGender = val!;
+                              ep.profileData!.employee!.gender =
+                                  ep.selectGender;
+                            });
+                          }),
+                      RadioListTile<String>(
+                          value: 'female',
+                          title: Text('Female'),
+                          groupValue: ep.selectGender,
+                          onChanged: (val) {
+                            setState(() {
+                              ep.selectGender = val!;
+                              ep.profileData!.employee!.gender =
+                                  ep.selectGender;
+                            });
+                          }),
+                    ],
                   ),
-                  RadioListTile<String>(
-                      value: 'male',
-                      title: Text('Male'),
-                      groupValue: ep.selectGender,
-                      onChanged: (val) {
-                        setState(() {
-                          ep.selectGender = val!;
-                          ep.profileData!.employee!.gender = ep.selectGender;
-                        });
-                      }),
-                  RadioListTile<String>(
-                      value: 'female',
-                      title: Text('Female'),
-                      groupValue: ep.selectGender,
-                      onChanged: (val) {
-                        setState(() {
-                          ep.selectGender = val!;
-                          ep.profileData!.employee!.gender = ep.selectGender;
-                        });
-                      }),
+                  if (!ep.approved)
+                    Container(
+                      color: Colors.transparent,
+                      height: 150,
+                      width: double.maxFinite,
+                    )
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Stack(
                 children: [
-                  Text(
-                    'Have you been  ep.interviewed previously for employment in this company? ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Have you been  ep.interviewed previously for employment in this company? ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      RadioListTile<String>(
+                          value: 'Yes',
+                          title: Text('Yes'),
+                          groupValue: ep.interviewed,
+                          onChanged: (val) {
+                            setState(() {
+                              ep.interviewed = val!;
+                              ep.profileData!.employee!.interviewed =
+                                  ep.interviewed;
+                            });
+                          }),
+                      RadioListTile<String>(
+                          value: 'No',
+                          title: Text('No'),
+                          groupValue: ep.interviewed,
+                          onChanged: (val) {
+                            setState(() {
+                              ep.interviewed = val!;
+                              ep.profileData!.employee!.interviewed =
+                                  ep.interviewed;
+                            });
+                          }),
+                    ],
                   ),
-                  RadioListTile<String>(
-                      value: 'Yes',
-                      title: Text('Yes'),
-                      groupValue: ep.interviewed,
-                      onChanged: (val) {
-                        setState(() {
-                          ep.interviewed = val!;
-                          ep.profileData!.employee!.interviewed =
-                              ep.interviewed;
-                        });
-                      }),
-                  RadioListTile<String>(
-                      value: 'No',
-                      title: Text('No'),
-                      groupValue: ep.interviewed,
-                      onChanged: (val) {
-                        setState(() {
-                          ep.interviewed = val!;
-                          ep.profileData!.employee!.interviewed =
-                              ep.interviewed;
-                        });
-                      }),
+                  if (!ep.approved)
+                    Container(
+                      color: Colors.transparent,
+                      height: 150,
+                      width: double.maxFinite,
+                    )
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Stack(
                 children: [
-                  Text(
-                    'Treatment by any psychotropic drug for long / short term, history of mental illness, if any (self / family) or any major illness in previous two years.',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Treatment by any psychotropic drug for long / short term, history of mental illness, if any (self / family) or any major illness in previous two years.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      RadioListTile<String>(
+                          value: 'Yes',
+                          title: Text('Yes'),
+                          groupValue: ep.treatment,
+                          onChanged: (val) {
+                            setState(() {
+                              ep.treatment = val!;
+                              ep.profileData!.employee!.treatment =
+                                  ep.treatment;
+                            });
+                          }),
+                      RadioListTile<String>(
+                          value: 'No',
+                          title: Text('No'),
+                          groupValue: ep.treatment,
+                          onChanged: (val) {
+                            setState(() {
+                              ep.treatment = val!;
+                              ep.profileData!.employee!.treatment =
+                                  ep.treatment;
+                            });
+                          }),
+                      Text(
+                          'Declaration:\n I certify that the facts stated by me in this application are true. I understand that any misrepresentation or suppression of any information will render me liable for summary dismissal forthwith from the services of the company.\nI give my consent to TEAM IDEAL to conduct a CIBIL / any other check on my profile basis the information furnished below with utmost accuracy.'),
+                      SizedBox(
+                        height: 100,
+                      ),
+                    ],
                   ),
-                  RadioListTile<String>(
-                      value: 'Yes',
-                      title: Text('Yes'),
-                      groupValue: ep.treatment,
-                      onChanged: (val) {
-                        setState(() {
-                          ep.treatment = val!;
-                          ep.profileData!.employee!.treatment = ep.treatment;
-                        });
-                      }),
-                  RadioListTile<String>(
-                      value: 'No',
-                      title: Text('No'),
-                      groupValue: ep.treatment,
-                      onChanged: (val) {
-                        setState(() {
-                          ep.treatment = val!;
-                          ep.profileData!.employee!.treatment = ep.treatment;
-                        });
-                      }),
-                  Text(
-                      'Declaration:\n I certify that the facts stated by me in this application are true. I understand that any misrepresentation or suppression of any information will render me liable for summary dismissal forthwith from the services of the company.\nI give my consent to TEAM IDEAL to conduct a CIBIL / any other check on my profile basis the information furnished below with utmost accuracy.'),
-                  SizedBox(
-                    height: 100,
-                  ),
+                  if (!ep.approved)
+                    Container(
+                      color: Colors.transparent,
+                      height: 150,
+                      width: double.maxFinite,
+                    )
                 ],
               ),
             ],
@@ -710,6 +838,7 @@ class _FieldControl2State extends State<FieldControl2> {
   }
 }
 
+///step6
 class FieldControl6 extends StatefulWidget {
   const FieldControl6({Key? key, required this.docs, required this.formKey})
       : super(key: key);
@@ -747,7 +876,7 @@ class _FieldControl6State extends State<FieldControl6> {
       // debugPrint('${ep.profileData!.employee!.treatment}');
       return Scrollbar(
         controller: scrollController,
-        thickness: 15,
+        thickness: 10,
         showTrackOnHover: true,
         thumbVisibility: true,
         interactive: true,
@@ -782,31 +911,31 @@ class _FieldControl6State extends State<FieldControl6> {
                           field: 'esicupld',
                           type: 'sample',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'ESIC Form Download',
                           field: 'form2upld',
                           type: 'sample',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'ESIC Form Download',
                           field: 'form11upld',
                           type: 'sample',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'ESIC Form Download',
                           field: 'tiplinfo',
                           type: 'sample',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'ESIC Form Download',
                           field: 'tiplkit',
                           type: 'sample',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                     ],
                   ),
                 ),
@@ -837,43 +966,43 @@ class _FieldControl6State extends State<FieldControl6> {
                           field: 'panupld',
                           type: 'doc',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'EAadhar Card',
                           field: 'aadharupld',
                           type: 'doc',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'Cancel Chq',
                           field: 'cchqupld',
                           type: 'doc',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'Relieving Letter of Last Employment	',
                           field: 'reletterupld',
                           type: 'doc',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'Last Past Examination Certificate	',
                           field: 'pastcerupld',
                           type: 'doc',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'Passport Size Photo	',
                           field: 'passportupld',
                           type: 'doc',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
                           title: 'Address Proof	',
                           field: 'addproofupld',
                           type: 'doc',
                           url:
-                              'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'),
+                              'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                     ],
                   ),
                 ),
@@ -927,97 +1056,103 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (widget.title != null)
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      debugPrint('User has permission to edit ${ep.approved}');
+      return Column(
+        children: [
+          if (widget.title != null)
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.title!,
+                    style: widget.titleStyle ??
+                        const TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                  ),
+                )
+              ],
+            ),
+          const SizedBox(height: 5),
           Row(
             children: [
               Expanded(
-                child: Text(
-                  widget.title!,
-                  style: widget.titleStyle ??
-                      const TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                ),
-              )
-            ],
-          ),
-        const SizedBox(height: 5),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 60,
-                child: TextFormField(
-                  // key: formKey,
-                  // focusNode: focusNode,
-                  onTap: widget.onTap,
-                  autovalidateMode: AutovalidateMode.always,
-                  controller: widget.controller,
-                  keyboardType: widget.inputType,
-                  maxLines: widget.maxline,
-                  readOnly: widget.readOnly ?? false,
-                  // style:widget.titleStyle,
-                  enabled: widget.readOnly != null ? !widget.readOnly! : true,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    suffixIcon:
-                        widget.formType != null && widget.formType == 'date'
-                            ? IconButton(
-                                onPressed: () async {
-                                  var dt = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1990),
-                                    lastDate: DateTime.now().add(
-                                      Duration(days: 2 * 365),
-                                    ),
-                                  );
-                                  if (dt != null) {
-                                    setState(() {
-                                      widget.controller.text =
-                                          DateFormat('dd-MM-yyyy').format(dt);
-                                      widget.onChange(widget.controller.text);
-                                    });
-                                  }
-                                },
-                                icon: Icon(Icons.calendar_month),
-                              )
-                            : null,
-                    hintStyle: widget.lableStyle,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                child: SizedBox(
+                  height: 60,
+                  child: TextFormField(
+                    // key: formKey,
+                    // focusNode: focusNode,
+                    onTap: widget.onTap,
+                    autovalidateMode: AutovalidateMode.always,
+                    controller: widget.controller,
+                    keyboardType: widget.inputType,
+                    maxLines: widget.maxline,
+                    readOnly: ep.approved ? false : true,
+                    // readOnly: true,
+                    // style:widget.titleStyle,
+                    enabled: widget.readOnly != null ? !widget.readOnly! : true,
+                    // enabled: widget.readOnly != null ? !widget.readOnly! : true,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      suffixIcon: ep.approved &&
+                              widget.formType != null &&
+                              widget.formType == 'date'
+                          ? IconButton(
+                              onPressed: () async {
+                                var dt = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1990),
+                                  lastDate: DateTime.now().add(
+                                    Duration(days: 2 * 365),
+                                  ),
+                                );
+                                if (dt != null) {
+                                  setState(() {
+                                    widget.controller.text =
+                                        DateFormat('dd-MM-yyyy').format(dt);
+                                    widget.onChange(widget.controller.text);
+                                  });
+                                }
+                              },
+                              icon: Icon(Icons.calendar_month),
+                            )
+                          : null,
+                      hintStyle: widget.lableStyle,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hintText: widget.label,
                     ),
-                    hintText: widget.label,
-                  ),
-                  onChanged: (val) {
-                    widget.onChange(val);
-                  },
-                  validator: (val) {
-                    if (widget.required) {
-                      print(val);
+                    onChanged: (val) {
+                      widget.onChange(val);
+                    },
+                    validator: (val) {
+                      if (widget.required) {
+                        print(val);
 
-                      if (val!.isEmpty) {
-                        return '${widget.title} is required';
+                        if (val!.isEmpty) {
+                          return '${widget.title} is required';
+                        }
+                      } else {
+                        print('No');
                       }
-                    } else {
-                      print('No');
-                    }
-                  },
-                  onEditingComplete: () {
-                    // print('Editing completed');
-                    // formKey.currentState?.validate();
-                  },
+                    },
+                    onEditingComplete: () {
+                      // print('Editing completed');
+                      // formKey.currentState?.validate();
+                    },
+                  ),
                 ),
               ),
-            )
-          ],
-        ),
-        SizedBox(height: 15),
-      ],
-    );
+            ],
+          ),
+          SizedBox(height: 15),
+        ],
+      );
+    });
   }
 }
 
@@ -1074,50 +1209,59 @@ class _CustomDropDownFieldState extends State<CustomDropDownField> {
   Widget build(BuildContext context) {
     return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
       return Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        body: Stack(
           children: [
-            if (widget.title != null)
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.title!,
-                      style: widget.titleStyle ??
-                          const TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                    ),
-                  )
-                ],
-              ),
-            const SizedBox(height: 5),
-            DropDownTextField(
-              // initialValue: "name4",
-              isEnabled: widget.isEnabled ?? true,
-              controller: _cnt,
-              clearOption: true,
-              enableSearch: true,
-              clearIconProperty: IconProperty(color: Colors.green),
-              searchDecoration: InputDecoration(hintText: widget.label),
-              validator: (value) {
-                debugPrint('validate $value');
-                if (value == null || value == '') {
-                  return "Required field";
-                } else {
-                  return null;
-                }
-              },
-              dropDownItemCount: 6,
-              autovalidateMode: AutovalidateMode.always,
-              dropDownList: widget.options,
-              onChanged: (val) {
-                widget.onChange(val);
-                ep.selectedWorkingCompany = val.name;
-                print(val.runtimeType);
-              },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.title != null)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.title!,
+                          style: widget.titleStyle ??
+                              const TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                        ),
+                      )
+                    ],
+                  ),
+                const SizedBox(height: 5),
+                DropDownTextField(
+                  // initialValue: "name4",
+                  // readOnly: ep.approved ? false : true,
+                  isEnabled: ep.approved ? true : widget.isEnabled ?? true,
+                  controller: _cnt,
+                  clearOption: true,
+                  enableSearch: true,
+                  clearIconProperty: IconProperty(color: Colors.green),
+                  searchDecoration: InputDecoration(hintText: widget.label),
+                  validator: (value) {
+                    debugPrint('validate $value');
+                    if (value == null || value == '') {
+                      return "Required field";
+                    } else {
+                      return null;
+                    }
+                  },
+                  dropDownItemCount: 6,
+                  autovalidateMode: AutovalidateMode.always,
+                  dropDownList: widget.options,
+                  onChanged: (val) {
+                    widget.onChange(val);
+                    ep.selectedWorkingCompany = val.name;
+                    print(val.runtimeType);
+                  },
+                ),
+              ],
             ),
+            if (!ep.approved)
+              Container(
+                color: Colors.transparent,
+              ),
           ],
         ),
       );
@@ -1125,6 +1269,7 @@ class _CustomDropDownFieldState extends State<CustomDropDownField> {
   }
 }
 
+///step3
 class EducationCard extends StatefulWidget {
   const EducationCard({Key? key}) : super(key: key);
 
@@ -1139,99 +1284,35 @@ class _EducationCardState extends State<EducationCard> {
       return ListView(
         children: [
           ...ep.educations.map((e) {
+            print(e.examPassed);
+            print(e.insName);
+            print(e.passPercentage);
+            print(e.yearOfPass);
             return SizedBox(
               // height: 300,
-              child: Card(
-                // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
-                elevation: 5,
-                shadowColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  child: Form(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Form ${e.id}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Spacer(),
-                            TextButton.icon(
-                              onPressed: () async {
-                                setState(() {
-                                  ep.educations.removeWhere(
-                                      (element) => element.id == e.id);
-                                });
-                              },
-                              icon: Icon(
-                                Icons.remove,
-                                color: Colors.red,
-                              ),
-                              label: Text(
-                                'Remove',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
-                        ),
-                        CustomTextField(
-                          onChange: (val) {},
-                          title: 'Examination Passed',
-                          label: '',
-                          required: true,
-                          controller: TextEditingController(text: e.id ?? ''),
-                        ),
-                        CustomTextField(
-                          onChange: (val) {},
-                          title: 'Institution Name',
-                          label: '',
-                          required: true,
-                          controller: TextEditingController(text: e.id),
-                        ),
-                        CustomTextField(
-                          onChange: (val) {},
-                          title: 'Year of Passing',
-                          label: '',
-                          required: true,
-                          inputType: TextInputType.number,
-                          controller: TextEditingController(),
-                        ),
-                        CustomTextField(
-                          onChange: (val) {},
-                          title: 'Passed % Obtained	',
-                          label: '',
-                          required: true,
-                          inputType: TextInputType.number,
-                          controller: TextEditingController(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              child: EduCard(
+                e: e,
+                index: ep.educations.indexOf(e),
               ),
             );
           }),
           SizedBox(height: 20),
-          Row(
-            children: [
-              FloatingActionButton.extended(
-                  onPressed: () {
-                    ep.educations.add(
-                      EducationBoxModel(
-                        id: (ep.educations.length + 1).toString(),
-                      ),
-                    );
-                    setState(() {});
-                  },
-                  label: Text('Add New'),
-                  icon: Icon(Icons.add)),
-            ],
-          ),
+          if (ep.approved)
+            Row(
+              children: [
+                FloatingActionButton.extended(
+                    onPressed: () {
+                      ep.educations.add(
+                        EducationBoxModel(
+                          id: (ep.educations.length + 1).toString(),
+                        ),
+                      );
+                      setState(() {});
+                    },
+                    label: Text('Add New'),
+                    icon: Icon(Icons.add)),
+              ],
+            ),
           SizedBox(height: 200),
         ],
       );
@@ -1241,6 +1322,7 @@ class _EducationCardState extends State<EducationCard> {
 
 class EducationBoxModel {
   String id;
+  String? emp_code;
   String? examPassed;
   String? insName;
   String? yearOfPass;
@@ -1248,10 +1330,250 @@ class EducationBoxModel {
   EducationBoxModel({
     required this.id,
     this.examPassed,
+    this.emp_code,
     this.insName,
     this.yearOfPass,
     this.passPercentage,
   });
+}
+
+class EduCard extends StatefulWidget {
+  const EduCard({Key? key, required this.e, required this.index})
+      : super(key: key);
+  final EducationBoxModel e;
+  final int index;
+  @override
+  State<EduCard> createState() => _EduCardState();
+}
+
+class _EduCardState extends State<EduCard> {
+  EduDetail? eduDetail;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    eduDetail = EduDetail(
+      id: widget.e.id,
+      exampass: widget.e.examPassed,
+      empCode: widget.e.emp_code,
+      passyear: widget.e.yearOfPass,
+      passperc: widget.e.passPercentage,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      return Card(
+        // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
+        elevation: 5,
+        shadowColor: Colors.red,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          child: Form(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Form ${widget.index + 1}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    TextButton.icon(
+                      onPressed: () async {
+                        setState(() {
+                          ep.educations.remove(widget.e);
+                        });
+                      },
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.red,
+                      ),
+                      label: Text(
+                        'Remove',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.educations[widget.index].examPassed = val;
+                    // setState(() {});
+                  },
+                  title: 'Examination Passed',
+                  label: '',
+                  required: true,
+                  controller:
+                      TextEditingController(text: widget.e.examPassed ?? ''),
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.educations[widget.index].insName = val;
+                    // setState(() {});
+                  },
+                  title: 'Institution Name',
+                  label: '',
+                  required: true,
+                  controller:
+                      TextEditingController(text: widget.e.insName ?? ''),
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.educations[widget.index].yearOfPass = val;
+                    // setState(() {});
+                  },
+                  title: 'Year of Passing',
+                  label: '',
+                  required: true,
+                  inputType: TextInputType.number,
+                  controller:
+                      TextEditingController(text: widget.e.yearOfPass ?? ''),
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.educations[widget.index].passPercentage = val;
+                    // setState(() {});
+                  },
+                  title: 'Passed % Obtained	',
+                  label: '',
+                  required: true,
+                  inputType: TextInputType.number,
+                  controller: TextEditingController(
+                      text: widget.e.passPercentage ?? ''),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
+}
+
+///step 4
+
+class EmpDetailListCard extends StatefulWidget {
+  const EmpDetailListCard({Key? key, required this.e, required this.index})
+      : super(key: key);
+  final EmpDetail e;
+  final int index;
+  @override
+  State<EmpDetailListCard> createState() => _EmpDetailListCardState();
+}
+
+class _EmpDetailListCardState extends State<EmpDetailListCard> {
+  late EmpDetail empDetail;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    empDetail = widget.e;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      return Card(
+        // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
+        elevation: 5,
+        shadowColor: Colors.red,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          child: Form(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '# ${widget.index + 1}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    TextButton.icon(
+                      onPressed: () async {
+                        setState(() {
+                          ep.employees.remove(empDetail);
+                        });
+                      },
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.red,
+                      ),
+                      label: Text(
+                        'Remove',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.employees[widget.index].prevorg = val;
+                  },
+                  title: 'PREVIOUS ORGANISATION',
+                  label: 'PREVIOUS ORGANISATION',
+                  required: true,
+                  controller:
+                      TextEditingController(text: empDetail.prevorg ?? ''),
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.employees[widget.index].prevpos = val;
+                  },
+                  title: 'PREVIOUS POSITION',
+                  label: 'PREVIOUS POSITION',
+                  required: true,
+                  controller:
+                      TextEditingController(text: empDetail.prevpos ?? ''),
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.employees[widget.index].prevsal = val;
+                  },
+                  title: 'GROSS SALARY',
+                  label: 'GROSS SALARY',
+                  required: true,
+                  inputType: TextInputType.number,
+                  controller:
+                      TextEditingController(text: empDetail.prevsal ?? ''),
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.employees[widget.index].reasonleave = val;
+                  },
+                  title: 'REASON FOR LEAVING',
+                  label: 'REASON FOR LEAVING',
+                  required: true,
+                  inputType: TextInputType.text,
+                  controller:
+                      TextEditingController(text: empDetail.reasonleave ?? ''),
+                ),
+                CustomTextField(
+                  onChange: (val) {
+                    ep.employees[widget.index].periodofemp = val;
+                  },
+                  title: 'PERIOD OF EMPLOYEMENT',
+                  label: 'PERIOD OF EMPLOYEMENT',
+                  required: true,
+                  inputType: TextInputType.text,
+                  controller:
+                      TextEditingController(text: empDetail.periodofemp ?? ''),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
 }
 
 class PreviousJobCard extends StatefulWidget {
@@ -1262,129 +1584,41 @@ class PreviousJobCard extends StatefulWidget {
 }
 
 class _PreviousJobCardState extends State<PreviousJobCard> {
-  Set<PreviousJobModel> jobs = {};
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ...jobs.map((e) {
-          return SizedBox(
-            // height: 300,
-            child: Card(
-              // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
-              elevation: 5,
-              shadowColor: Colors.red,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: Container(
-                padding: EdgeInsets.all(8),
-                child: Form(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            '# ${e.id}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Spacer(),
-                          TextButton.icon(
-                            onPressed: () async {
-                              setState(() {
-                                jobs.removeWhere(
-                                    (element) => element.id == e.id);
-                              });
-                            },
-                            icon: Icon(
-                              Icons.remove,
-                              color: Colors.red,
-                            ),
-                            label: Text(
-                              'Remove',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'PREVIOUS ORGANISATION',
-                        label: 'PREVIOUS ORGANISATION',
-                        required: true,
-                        controller: TextEditingController(text: e.preOrg ?? ''),
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'PREVIOUS POSITION',
-                        label: 'PREVIOUS POSITION',
-                        required: true,
-                        controller: TextEditingController(text: e.id),
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'PREVIOUS POSITION',
-                        label: 'PREVIOUS POSITION',
-                        required: true,
-                        inputType: TextInputType.number,
-                        controller: TextEditingController(),
-                      ),
-                      CustomTextField(
-                        onChange: (val) {},
-                        title: 'REASON FOR LEAVING',
-                        label: 'REASON FOR LEAVING',
-                        required: true,
-                        inputType: TextInputType.number,
-                        controller: TextEditingController(),
-                      ),
-                    ],
-                  ),
-                ),
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      return ListView(
+        children: [
+          ...ep.employees.map((e) {
+            return SizedBox(
+              // height: 300,
+              child: EmpDetailListCard(
+                e: e,
+                index: ep.employees.indexOf(e),
               ),
+            );
+          }),
+          SizedBox(height: 20),
+          if (ep.approved)
+            Row(
+              children: [
+                FloatingActionButton.extended(
+                    onPressed: () {
+                      ep.employees.add(EmpDetail());
+                      setState(() {});
+                    },
+                    label: Text('Add New'),
+                    icon: Icon(Icons.add)),
+              ],
             ),
-          );
-        }),
-        SizedBox(height: 20),
-        Row(
-          children: [
-            FloatingActionButton.extended(
-                onPressed: () {
-                  jobs.add(
-                    PreviousJobModel(
-                      id: Random().nextInt(1000).toString(),
-                      preOrg: Random().nextInt(1000).toString(),
-                    ),
-                  );
-                  setState(() {});
-                },
-                label: Text('Add New'),
-                icon: Icon(Icons.add)),
-          ],
-        ),
-        SizedBox(height: 200),
-      ],
-    );
+          SizedBox(height: 200),
+        ],
+      );
+    });
   }
 }
 
-class PreviousJobModel {
-  String id;
-  String? preOrg;
-  String? prePosition;
-  String? preSalary;
-  String? reason;
-  String? periodOfEmployeement;
-  PreviousJobModel({
-    required this.id,
-    this.preOrg,
-    this.prePosition,
-    this.preSalary,
-    this.reason,
-    this.periodOfEmployeement,
-  });
-}
-
+///Step 5
 class ReferencesForm extends StatefulWidget {
   const ReferencesForm({Key? key}) : super(key: key);
 
@@ -1395,227 +1629,165 @@ class ReferencesForm extends StatefulWidget {
 class _ReferencesFormState extends State<ReferencesForm> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Text(
-          'Emergency contact (Family Member Only):',
-          style: TextStyle(
-            // color: Colors.grey,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Card(
-          // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
-          elevation: 5,
-          shadowColor: Colors.red,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: Container(
-            padding: EdgeInsets.all(8),
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '#734',
-                    style: TextStyle(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Name',
-                    label: 'Name',
-                    required: true,
-                    controller: TextEditingController(text: '' ?? ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Relation',
-                    label: 'Relation',
-                    required: true,
-                    controller: TextEditingController(text: ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Number',
-                    label: 'Number',
-                    required: true,
-                    inputType: TextInputType.number,
-                    controller: TextEditingController(),
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    '#734',
-                    style: TextStyle(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Name',
-                    label: 'Name',
-                    required: true,
-                    controller: TextEditingController(text: '' ?? ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Relation',
-                    label: 'Relation',
-                    required: true,
-                    controller: TextEditingController(text: ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Number',
-                    label: 'Number',
-                    required: true,
-                    inputType: TextInputType.number,
-                    controller: TextEditingController(),
-                  ),
-                  SizedBox(height: 30),
-                ],
+    return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
+      return ListView(
+        children: [
+          Card(
+            // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
+            elevation: 0,
+            shadowColor: Colors.red,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              child: Form(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Emergency contact (Family Member Only):',
+                      style: TextStyle(
+                        // color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    ...ep.emergencies.map(
+                      (e) {
+                        var index = ep.emergencies.indexOf(e);
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '#${index + 1}',
+                              style: TextStyle(),
+                            ),
+                            CustomTextField(
+                              onChange: (val) {
+                                ep.emergencies[index].emergname = val;
+                              },
+                              title: 'Name',
+                              label: 'Name',
+                              required: true,
+                              controller: TextEditingController(
+                                  text: ep.emergencies[index].emergname ?? ''),
+                            ),
+                            CustomTextField(
+                              onChange: (val) {
+                                ep.emergencies[index].emergrel = val;
+                              },
+                              title: 'Relation',
+                              label: 'Relation',
+                              required: true,
+                              controller: TextEditingController(
+                                  text: ep.emergencies[index].emergrel ?? ''),
+                            ),
+                            CustomTextField(
+                              onChange: (val) {
+                                ep.emergencies[index].emergno = val;
+                              },
+                              title: 'Number',
+                              label: 'Number',
+                              required: true,
+                              inputType: TextInputType.number,
+                              controller: TextEditingController(
+                                  text: ep.emergencies[index].emergno ?? ''),
+                            ),
+                            SizedBox(height: 30),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 20),
-        Text(
-          'References (persons mentioned should hold responsible positions and should not be relatives):',
-          style: TextStyle(
-            // color: Colors.grey,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Card(
-          // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
-          elevation: 5,
-          shadowColor: Colors.red,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: Container(
-            padding: EdgeInsets.all(8),
-            child: Form(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '#734',
-                    style: TextStyle(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Name',
-                    label: 'Name',
-                    required: true,
-                    controller: TextEditingController(text: '' ?? ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Address & Contact Number/ email address',
-                    label: 'Address & Contact Number/ email address',
-                    required: true,
-                    controller: TextEditingController(text: ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Occupation',
-                    label: 'Occupation',
-                    required: true,
-                    inputType: TextInputType.number,
-                    controller: TextEditingController(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Years of Acquaintance',
-                    label: 'Years of Acquaintance',
-                    required: true,
-                    inputType: TextInputType.number,
-                    controller: TextEditingController(),
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    '#734',
-                    style: TextStyle(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Name',
-                    label: 'Name',
-                    required: true,
-                    controller: TextEditingController(text: '' ?? ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Address & Contact Number/ email address',
-                    label: 'Address & Contact Number/ email address',
-                    required: true,
-                    controller: TextEditingController(text: ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Occupation',
-                    label: 'Occupation',
-                    required: true,
-                    inputType: TextInputType.number,
-                    controller: TextEditingController(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Years of Acquaintance',
-                    label: 'Years of Acquaintance',
-                    required: true,
-                    inputType: TextInputType.number,
-                    controller: TextEditingController(),
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    '#734',
-                    style: TextStyle(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Name',
-                    label: 'Name',
-                    required: true,
-                    controller: TextEditingController(text: '' ?? ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Address & Contact Number/ email address',
-                    label: 'Address & Contact Number/ email address',
-                    required: true,
-                    controller: TextEditingController(text: ''),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Occupation',
-                    label: 'Occupation',
-                    required: true,
-                    inputType: TextInputType.number,
-                    controller: TextEditingController(),
-                  ),
-                  CustomTextField(
-                    onChange: (val) {},
-                    title: 'Years of Acquaintance',
-                    label: 'Years of Acquaintance',
-                    required: true,
-                    inputType: TextInputType.number,
-                    // titleStyle: const TextStyle(
-                    //     fontWeight: FontWeight.normal,
-                    //     color: Colors.grey,
-                    //     fontSize: 20),
-                    // lableStyle: const TextStyle(
-                    //     color: Colors.grey,
-                    //     fontWeight: FontWeight.bold,
-                    //     fontSize: 20),
-                    controller: TextEditingController(),
-                  ),
-                  SizedBox(height: 30),
-                ],
+          SizedBox(height: 20),
+          Card(
+            // color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
+            elevation: 5,
+            shadowColor: Colors.red,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              child: Form(
+                child: Column(
+                  children: [
+                    Text(
+                      'References (persons mentioned should hold responsible positions and should not be relatives):',
+                      style: TextStyle(
+                        // color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    ...ep.refPersons.map(
+                      (e) {
+                        var index = ep.refPersons.indexOf(e);
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '#$index',
+                              style: TextStyle(),
+                            ),
+                            CustomTextField(
+                              onChange: (val) {
+                                ep.refPersons[index].refname = val;
+                              },
+                              title: 'Name',
+                              label: 'Name',
+                              required: true,
+                              controller: TextEditingController(
+                                  text: ep.refPersons[index].refname ?? ''),
+                            ),
+                            CustomTextField(
+                              onChange: (val) {
+                                ep.refPersons[index].addconemail = val;
+                              },
+                              title: 'Address & Contact Number/ email address',
+                              label: 'Address & Contact Number/ email address',
+                              required: true,
+                              controller: TextEditingController(
+                                  text: ep.refPersons[index].addconemail ?? ''),
+                            ),
+                            CustomTextField(
+                              onChange: (val) {
+                                ep.refPersons[index].occupation = val;
+                              },
+                              title: 'Occupation',
+                              label: 'Occupation',
+                              required: true,
+                              inputType: TextInputType.number,
+                              controller: TextEditingController(
+                                  text: ep.refPersons[index].occupation ?? ''),
+                            ),
+                            CustomTextField(
+                              onChange: (val) {
+                                ep.refPersons[index].yrsofacq = val;
+                              },
+                              title: 'Years of Acquaintance',
+                              label: 'Years of Acquaintance',
+                              required: true,
+                              inputType: TextInputType.number,
+                              controller: TextEditingController(
+                                  text: ep.refPersons[index].yrsofacq ?? ''),
+                            ),
+                            SizedBox(height: 30),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 150),
-      ],
-    );
+          SizedBox(height: 150),
+        ],
+      );
+    });
   }
 }
 
@@ -1641,16 +1813,22 @@ class _DownloadAndUploadDocState extends State<DownloadAndUploadDoc> {
   @override
   Widget build(BuildContext context) {
     return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
-      bool selected = ep.fieldControl6.entries.any((element) =>
-          element.key == widget.field &&
-          element.value != null &&
-          element.value != '');
-      bool uploaded = ep.profileData!.documents!
-              .toJson()
-              .entries
-              .firstWhere((element) => element.key == widget.field)
-              .value !=
-          '';
+      bool selected = ep.fieldControl6.entries.any((element) {
+        print(element);
+        return element.key == widget.field &&
+            element.value != null &&
+            element.value != '';
+      });
+      bool uploaded =
+          ep.profileData!.documents!.toJson().entries.firstWhere((element) {
+                print(element);
+                return element.key == widget.field;
+              }).value !=
+              ''&& ep.profileData!.documents!.toJson().entries.firstWhere((element) {
+            print(element);
+            return element.key == widget.field;
+          }).value !=
+              null;
       return Row(
         children: [
           Expanded(
@@ -1661,9 +1839,11 @@ class _DownloadAndUploadDocState extends State<DownloadAndUploadDoc> {
                         style: TextStyle(), overflow: TextOverflow.ellipsis),
                   )
                 : ElevatedButton(
-                    onPressed: () async {
-                      downloadSample(widget.url);
-                    },
+                    onPressed: ep.approved
+                        ? () async {
+                            downloadSample(widget.url);
+                          }
+                        : null,
                     child: Row(
                       children: [
                         Expanded(
@@ -1682,9 +1862,13 @@ class _DownloadAndUploadDocState extends State<DownloadAndUploadDoc> {
               style: ElevatedButton.styleFrom(
                   backgroundColor:
                       selected || uploaded ? Colors.green : Colors.grey[500]),
-              onPressed: () async {
-                await ep.pickFiles(field: widget.field);
-              },
+              onPressed: ep.approved
+                  ? () async {
+                      await ep
+                          .pickFiles(field: widget.field)
+                          .then((value) => setState(() {}));
+                    }
+                  : null,
               child: Text(
                   selected
                       ? 'Img 34 34 dfewv g  fedd fdsfdgr edddf739.png'
@@ -1712,7 +1896,7 @@ void downloadSample(String url) async {
       var response = await Dio().download(
         'http://www.google.com',
         filePath,
-        options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),
+        // options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),
         onReceiveProgress: ((pr, st) {
           debugPrint('downloading file $url at $filePath  $pr  $st');
         }),

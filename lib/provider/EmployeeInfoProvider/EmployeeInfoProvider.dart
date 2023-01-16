@@ -20,8 +20,11 @@ import 'package:http/http.dart' as http;
 
 class EmployeeInfoProvider extends ChangeNotifier {
   String tag = 'EmployeeInfoProvider';
+  late String empId;
+  late String empCode;
 
   ProfileData? profileData;
+  bool approved = false;
   bool loadingProfileData = false;
 
   Future<void> getProfileData() async {
@@ -30,13 +33,12 @@ class EmployeeInfoProvider extends ChangeNotifier {
       loadingProfileData = true;
       notifyListeners();
       Map<String, String> headers = {"Accept": "*/*"};
-      var url = AppConst.baseUrl + AppConst.edit_profile + 'emp_id=1';
+      var url = AppConst.baseUrl + AppConst.edit_profile + 'emp_id=$empId';
       bool cacheExist =
           await APICacheManager().isAPICacheKeyExist('profileData');
-      notifyListeners();
       var res = await http.get(Uri.parse(url), headers: headers);
-      // // debugPrint(
-      //     '$tag getProfileData response ${res.request!.url} ${res.body}');
+      debugPrint(
+          '$tag getProfileData response ${res.request!.url} ${res.body}');
       if (res.statusCode == 200) {
         if (jsonDecode(res.body)['status'] == 'Success') {
           var data = jsonDecode(res.body)['data'];
@@ -61,14 +63,26 @@ class EmployeeInfoProvider extends ChangeNotifier {
       if (response != null) {
         profileData = (ProfileData.fromJson(response));
 
+        profileData!.employee = profileData!.employee ?? Employee();
+        empCode = profileData!.employee!.empCode ?? '';
+        profileData!.documents = profileData!.documents ?? Documents();
+        approved = profileData!.employee!.is_approved != null &&
+            profileData!.employee!.is_approved == '0';
+        initEducationsList(profileData!.eduDetail);
+        initEmpDetailList(profileData!.empDetail);
+        initRefEmergencyList(profileData!.refEmergengy);
+        initrefPersonsList(profileData!.refPersons);
         notifyListeners();
       }
 
-      // // debugPrint('$tag getProfileData total ${profileData!.toJson()}');
+      debugPrint('$tag getProfileData is_approved ${approved}');
     } catch (e) {
       // // debugPrint('e e e e e  getProfileData e e -> $e');
     }
-    // // debugPrint('testing getProfileData ------ >getVehicles ');
+    // debugPrint(
+    //     'testing getProfileData  edu details------ >${response['edu_detail']} ');
+    // debugPrint(
+    //     'testing getProfileData  edu details------ >${profileData!.eduDetail} ');
     loadingProfileData = false;
     notifyListeners();
     // Navigator.push(Get.context!, MaterialPageRoute(builder: (context)=>ManageEmployees()));
@@ -279,7 +293,7 @@ class EmployeeInfoProvider extends ChangeNotifier {
   String? treatment;
   bool isUploadingField1andForm2 = false;
   Future<void> uploadField1andForm2Docs() async {
-    var url = AppConst.baseUrl + AppConst.form1Upload;
+    var url = AppConst.baseUrl + AppConst.form1andForm2Upload;
     var header = {"Accept": "*/*"};
 
     try {
@@ -297,8 +311,14 @@ class EmployeeInfoProvider extends ChangeNotifier {
       newData.addIf(true, 'working_for', selectedWorkingCompany ?? '');
       newData.addIf(true, 'zone', selectedZone ?? '');
       newData.addIf(true, 'account_status', selectedAccStatus ?? '');
+      newData.addIf(true, 'gender', selectGender ?? '');
+      newData.addIf(true, 'interviewed', interviewed ?? '');
+      newData.addIf(true, 'treatment', treatment ?? '');
+      newData.forEach((key, value) {
+        print('$key + $value');
+      });
       print(
-          'result   uploadField1andForm2Docs-->h ${url} ${jsonEncode(newData)}');
+          'params   uploadField1andForm2Docs-->h ${url} ${jsonEncode(newData)}');
 
       var response = await http.post(Uri.parse(url),
           headers: header, body: jsonEncode(newData));
@@ -311,28 +331,21 @@ class EmployeeInfoProvider extends ChangeNotifier {
         print(
             'result   uploadField1andForm2Docs --> responseData $responseData');
         if (responseData['success']) {
-          fieldControl6.clear();
-          AwesomeDialog(
-            context: Get.context!,
-            dialogType: DialogType.success,
-            autoHide: Duration(seconds: 3),
-            title: '\n\n${jsonDecode(responseData)['message']} \n',
-            autoDismiss: true,
-          ).show();
+          fieldControl2.clear();
           getProfileData();
           AwesomeDialog(
             context: Get.context!,
             dialogType: DialogType.success,
             autoHide: Duration(seconds: 3),
-            title: '\n\n${jsonDecode(responseData)['message']} \n',
+            title: '\n${responseData['message']} \n',
             autoDismiss: true,
-          ).show().then((value) => Get.back());
+          ).show();
         } else {
           AwesomeDialog(
             context: Get.context!,
             dialogType: DialogType.error,
             autoHide: Duration(seconds: 3),
-            title: '\n\n${jsonDecode(responseData)['message']} \n',
+            title: '\n${responseData['message']} \n',
             autoDismiss: true,
           ).show();
         }
@@ -345,7 +358,241 @@ class EmployeeInfoProvider extends ChangeNotifier {
   }
 
   ///Step 3
-  List<EducationBoxModel> educations=[];
+  List<EducationBoxModel> educations = [];
+  void initEducationsList(List<EduDetail>? list) {
+    educations.clear();
+    if (list != null && list.isNotEmpty) {
+      list.forEach((detail) {
+        educations.add(
+          EducationBoxModel(
+            id: detail.id ?? '',
+            examPassed: detail.exampass ?? '',
+            insName: detail.instnm ?? '',
+            yearOfPass: detail.passyear ?? '',
+            passPercentage: detail.passperc ?? '',
+          ),
+        );
+      });
+    }
+  }
+
+  bool isUploadingForm3 = false;
+
+  Future<void> uploadField3() async {
+    var url = AppConst.baseUrl + AppConst.form3Upload;
+    var header = {"Accept": "*/*"};
+
+    try {
+      isUploadingForm3 = true;
+      notifyListeners();
+      var newData = [];
+      print(educations.length);
+      for (var i = 0; i < educations.length; i++) {
+        newData.add({
+          'exampass': educations[i].examPassed,
+          'instnm': educations[i].insName,
+          'passyear': educations[i].yearOfPass,
+          'passperc': educations[i].passPercentage,
+        });
+      }
+      var body = {
+        'edit': profileData!.employee!.empCode,
+        'data': newData,
+      };
+      print('result   uploadField3-->h ${url} ${jsonEncode(body)}');
+
+      var response = await http.post(Uri.parse(url),
+          headers: header, body: jsonEncode(body));
+      print('result  got uploadField3--> responseData ${response.body}');
+
+      var responseData;
+      responseData = jsonDecode(response.body);
+      print('result   uploadField3 --> responseData $responseData');
+      if (responseData['success']) {
+        educations.clear();
+        getProfileData();
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          autoHide: Duration(seconds: 3),
+          title: '\n${responseData['message']} \n',
+          autoDismiss: true,
+        ).show();
+      } else {
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.error,
+          autoHide: Duration(seconds: 3),
+          title: '\n${responseData['message']} \n',
+          autoDismiss: true,
+        ).show();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    isUploadingForm3 = false;
+    notifyListeners();
+  }
+
+  ///Step 4
+  List<EmpDetail> employees = [];
+  void initEmpDetailList(List<EmpDetail>? list) {
+    employees.clear();
+    if (list != null && list.isNotEmpty) {
+      list.forEach((detail) {
+        employees.add(detail);
+      });
+    }
+  }
+
+  bool isUploadingForm4 = false;
+
+  Future<void> uploadField4() async {
+    var url = AppConst.baseUrl + AppConst.form4Upload;
+    var header = {"Accept": "*/*"};
+
+    try {
+      isUploadingForm4 = true;
+      notifyListeners();
+      var newData = [];
+      print(employees.length);
+      for (var i = 0; i < employees.length; i++) {
+        newData.add(
+          {
+            "prevorg": employees[i].prevorg,
+            "prevpos": employees[i].prevpos,
+            "prevsal": employees[i].prevsal,
+            "reasonleave": employees[i].reasonleave,
+            "periodofemp": employees[i].periodofemp
+          },
+        );
+      }
+      var body = {
+        'edit': profileData!.employee!.empCode,
+        'data': newData,
+      };
+      print('result   uploadField4-->h ${url} ${jsonEncode(body)}');
+
+      var response = await http.post(Uri.parse(url),
+          headers: header, body: jsonEncode(body));
+      print('result  got uploadField4--> responseData ${response.body}');
+
+      var responseData;
+      responseData = jsonDecode(response.body);
+      print(
+          'result   uploadField4 --> responseData $responseData  ${responseData['success']}  ${responseData['success'].runtimeType}');
+      if (responseData['success']) {
+        employees.clear();
+        getProfileData();
+
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          autoHide: Duration(seconds: 3),
+          title: '\n${responseData['message']} \n',
+          autoDismiss: true,
+        ).show();
+      } else {
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.error,
+          autoHide: Duration(seconds: 3),
+          title: '\n${responseData['message']} \n',
+          autoDismiss: true,
+        ).show();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    isUploadingForm4 = false;
+    notifyListeners();
+  }
+
+  ///Step 4
+  List<RefEmergency> emergencies = [];
+  void initRefEmergencyList(List<RefEmergency>? list) {
+    emergencies.clear();
+    if (list != null && list.isNotEmpty) {
+      list.forEach((detail) {
+        emergencies.add(detail);
+      });
+    }
+  }
+
+  List<RefPersons> refPersons = [];
+  void initrefPersonsList(List<RefPersons>? list) {
+    refPersons.clear();
+    if (list != null && list.isNotEmpty) {
+      list.forEach((detail) {
+        refPersons.add(detail);
+      });
+    }
+  }
+
+  bool isUploadingForm5 = false;
+
+  Future<void> uploadField5() async {
+    var url = AppConst.baseUrl + AppConst.form5Upload;
+    var header = {"Accept": "*/*"};
+
+    try {
+      isUploadingForm5 = true;
+      notifyListeners();
+
+      var body = {
+        "edit": empCode,
+        "emergency": emergencies
+            .map((e) => {
+                  "emergname": e.emergname,
+                  "emergrel": e.emergrel,
+                  "emergno": e.emergno
+                })
+            .toList(),
+        "references": refPersons
+            .map((e) => {
+                  "refname": e.refname,
+                  "addconemail": e.addconemail,
+                  "occupation": e.occupation,
+                  "yrsofacq": e.yrsofacq
+                })
+            .toList(),
+      };
+      print('result   uploadField5-->h ${url} ${jsonEncode(body)}');
+
+      var response = await http.post(Uri.parse(url),
+          headers: header, body: jsonEncode(body));
+      print('result  got uploadField5--> responseData ${response.body}');
+
+      var responseData;
+      responseData = jsonDecode(response.body);
+      print(
+          'result   uploadField5 --> responseData $responseData  ${responseData['success']}  ${responseData['success'].runtimeType}');
+      if (responseData['success']) {
+        employees.clear();
+        getProfileData();
+
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.success,
+          autoHide: Duration(seconds: 3),
+          title: '\n${responseData['message']} \n',
+          autoDismiss: true,
+        ).show();
+      } else {
+        AwesomeDialog(
+          context: Get.context!,
+          dialogType: DialogType.error,
+          autoHide: Duration(seconds: 3),
+          title: '\n${responseData['message']} \n',
+          autoDismiss: true,
+        ).show();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    isUploadingForm5 = false;
+    notifyListeners();
+  }
 
   ///Step 6
   Map<String, String> fieldControl6 = {};
@@ -381,28 +628,28 @@ class EmployeeInfoProvider extends ChangeNotifier {
     try {
       isUploadingField6 = true;
       notifyListeners();
-      var data = {
-        "id": "1",
-        "emp_code": "123456",
-        "esicupld": "",
-        "form2upld": "",
-        "form11upld": "",
-        "tiplinfo": "",
-        "tiplkit": "123456-IMG20230112100423.jpg",
-        "panupld": "",
-        "aadharupld": "",
-        "cchqupld": "",
-        "reletterupld": "",
-        "pastcerupld": "",
-        "passportupld": "",
-        "addproofupld": ""
-      };
+      // var data = {
+      //   "id": "1",
+      //   "emp_code": empCode,
+      //   "esicupld": "",
+      //   "form2upld": "",
+      //   "form11upld": "",
+      //   "tiplinfo": "",
+      //   "tiplkit": empCode-IMG20230112100423.jpg",
+      //   "panupld": "",
+      //   "aadharupld": "",
+      //   "cchqupld": "",
+      //   "reletterupld": "",
+      //   "pastcerupld": "",
+      //   "passportupld": "",
+      //   "addproofupld": ""
+      // };
       fieldControl6.entries.forEach((doc) async {
         print('doc  $doc');
         request.files
             .add(await http.MultipartFile.fromPath(doc.key, doc.value));
       });
-      request.fields['edit'] = '123456'.toString();
+      request.fields['edit'] = empCode.toString();
       request.headers.addAll(header);
       print('result   addLeave--> ${request.url} ${request.fields}');
       var res = await request.send();
@@ -417,7 +664,7 @@ class EmployeeInfoProvider extends ChangeNotifier {
           context: Get.context!,
           dialogType: DialogType.success,
           autoHide: Duration(seconds: 3),
-          title: '\n\n${jsonDecode(result)['message']} \n',
+          title: '\n${jsonDecode(result)['message']} \n',
           autoDismiss: true,
         ).show();
       } else {
@@ -425,7 +672,7 @@ class EmployeeInfoProvider extends ChangeNotifier {
           context: Get.context!,
           dialogType: DialogType.error,
           autoHide: Duration(seconds: 3),
-          title: '\n\n${jsonDecode(result)['message']} \n',
+          title: '\n${jsonDecode(result)['message']} \n',
           autoDismiss: true,
         ).show();
       }

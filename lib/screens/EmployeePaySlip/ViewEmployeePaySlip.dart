@@ -73,8 +73,7 @@ class PdfPreviewPage extends StatelessWidget {
   Future<Uint8List> makePdf(SlipDetails invoice) async {
     final pdf = pw.Document();
     final emoji = await PdfGoogleFonts.notoColorEmoji();
-    final netImage =
-        await networkImage(AppConst.baseUrl + invoice.employee!.companyLogo!);
+    final netImage = await networkImage(AppConst.companyLogoUrl);
 
     pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.standard,
@@ -174,26 +173,26 @@ class PdfPreviewPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        if(invoice.employee!.joindt!=null)
-                        pw.Row(
-                          children: [
-                            pw.Text(
-                              'Date of Joining : ',
-                              style: pw.TextStyle(
-                                fontFallback: [emoji],
-                                fontWeight: pw.FontWeight.normal,
+                        if (invoice.employee!.joindt != null)
+                          pw.Row(
+                            children: [
+                              pw.Text(
+                                'Date of Joining : ',
+                                style: pw.TextStyle(
+                                  fontFallback: [emoji],
+                                  fontWeight: pw.FontWeight.normal,
+                                ),
                               ),
-                            ),
-                            pw.Text(
-                              // '${DateFormat('dd-MM-yyyy').format(DateTime.parse(invoice.employee!.joindt))}',
-                              '${invoice.employee!.joindt.toString().split('-').reversed.join('-')}',
-                              style: pw.TextStyle(
-                                fontFallback: [emoji],
-                                fontWeight: pw.FontWeight.normal,
+                              pw.Text(
+                                // '${DateFormat('dd-MM-yyyy').format(DateTime.parse(invoice.employee!.joindt))}',
+                                '${invoice.employee!.joindt.toString().split('-').reversed.join('-')}',
+                                style: pw.TextStyle(
+                                  fontFallback: [emoji],
+                                  fontWeight: pw.FontWeight.normal,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
                         pw.Row(
                           children: [
                             pw.Text(
@@ -453,7 +452,7 @@ class PdfPreviewPage extends StatelessWidget {
               // build: (pw.Context context) {
               //   return pw.Column(
               //     children: [
-
+/*
               pw.Row(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
@@ -839,7 +838,7 @@ class PdfPreviewPage extends StatelessWidget {
                   ),
                 ],
               ),
-
+*/
               ///
               /*
               pw.Row(

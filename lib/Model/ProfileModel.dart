@@ -2,7 +2,7 @@ class ProfileData {
   Employee? employee;
   List<EduDetail>? eduDetail;
   List<EmpDetail>? empDetail;
-  List<RefEmergengy>? refEmergengy;
+  List<RefEmergency>? refEmergengy;
   List<RefPersons>? refPersons;
   Documents? documents;
 
@@ -31,9 +31,9 @@ class ProfileData {
       });
     }
     if (json['ref_emergengy'] != null) {
-      refEmergengy = <RefEmergengy>[];
+      refEmergengy = <RefEmergency>[];
       json['ref_emergengy'].forEach((v) {
-        refEmergengy!.add(new RefEmergengy.fromJson(v));
+        refEmergengy!.add(new RefEmergency.fromJson(v));
       });
     }
     if (json['ref_persons'] != null) {
@@ -129,64 +129,67 @@ class Employee {
   String? interviewdet;
   String? treatment;
   String? treatmentdet;
+  String? is_approved;
 
-  Employee(
-      {this.id,
-      this.firstNm,
-      this.middleNm,
-      this.lastNm,
-      this.empNm,
-      this.officialemail,
-      this.email,
-      this.altemail,
-      this.mobileno,
-      this.altmobileno,
-      this.curaddress,
-      this.address,
-      this.empCode,
-      this.password,
-      this.grade,
-      this.pfno,
-      this.esicNo,
-      this.education,
-      this.dob,
-      this.age,
-      this.cenddt,
-      this.state,
-      this.designation,
-      this.joindt,
-      this.resigndt,
-      this.leavedt,
-      this.location,
-      this.zone,
-      this.banknm,
-      this.accno,
-      this.bankcity,
-      this.branch,
-      this.aadharno,
-      this.remarks,
-      this.ifsc,
-      this.supervisor,
-      this.seniorSupervisor,
-      this.workingFor,
-      this.panNo,
-      this.gender,
-      this.principalComp,
-      this.otp,
-      this.accountStatus,
-      this.rephrName,
-      this.rephrNo,
-      this.repmngrName,
-      this.repmngrNo,
-      this.nomiName,
-      this.nomiNo,
-      this.nomiRel,
-      this.nomineedt,
-      this.nomiAdd,
-      this.interviewed,
-      this.interviewdet,
-      this.treatment,
-      this.treatmentdet});
+  Employee({
+    this.id,
+    this.firstNm,
+    this.middleNm,
+    this.lastNm,
+    this.empNm,
+    this.officialemail,
+    this.email,
+    this.altemail,
+    this.mobileno,
+    this.altmobileno,
+    this.curaddress,
+    this.address,
+    this.empCode,
+    this.password,
+    this.grade,
+    this.pfno,
+    this.esicNo,
+    this.education,
+    this.dob,
+    this.age,
+    this.cenddt,
+    this.state,
+    this.designation,
+    this.joindt,
+    this.resigndt,
+    this.leavedt,
+    this.location,
+    this.zone,
+    this.banknm,
+    this.accno,
+    this.bankcity,
+    this.branch,
+    this.aadharno,
+    this.remarks,
+    this.ifsc,
+    this.supervisor,
+    this.seniorSupervisor,
+    this.workingFor,
+    this.panNo,
+    this.gender,
+    this.principalComp,
+    this.otp,
+    this.accountStatus,
+    this.rephrName,
+    this.rephrNo,
+    this.repmngrName,
+    this.repmngrNo,
+    this.nomiName,
+    this.nomiNo,
+    this.nomiRel,
+    this.nomineedt,
+    this.nomiAdd,
+    this.interviewed,
+    this.interviewdet,
+    this.treatment,
+    this.treatmentdet,
+    this.is_approved,
+  });
 
   Employee.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -245,6 +248,7 @@ class Employee {
     interviewdet = json['interviewdet'];
     treatment = json['treatment'];
     treatmentdet = json['treatmentdet'];
+    is_approved = json['is_approved'];
   }
 
   Map<String, dynamic> toJson() {
@@ -305,6 +309,7 @@ class Employee {
     data['interviewdet'] = this.interviewdet;
     data['treatment'] = this.treatment;
     data['treatmentdet'] = this.treatmentdet;
+    data['is_approved'] = this.is_approved;
     return data;
   }
 }
@@ -387,17 +392,17 @@ class EmpDetail {
   }
 }
 
-class RefEmergengy {
+class RefEmergency {
   String? id;
   String? empCode;
   String? emergname;
   String? emergrel;
   String? emergno;
 
-  RefEmergengy(
+  RefEmergency(
       {this.id, this.empCode, this.emergname, this.emergrel, this.emergno});
 
-  RefEmergengy.fromJson(Map<String, dynamic> json) {
+  RefEmergency.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     empCode = json['emp_code'];
     emergname = json['emergname'];

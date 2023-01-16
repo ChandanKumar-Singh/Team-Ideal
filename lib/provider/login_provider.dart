@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:dakshattendance/const/config.dart';
 import 'package:dakshattendance/model/login_model.dart';
+import 'package:dakshattendance/provider/EmployeeInfoProvider/EmployeeInfoProvider.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../AppConst/AppConst.dart';
 
@@ -39,7 +42,10 @@ class UserLoginApi {
       if (response.statusCode == 200) {
         print(response.statusCode);
         responseJson = json.decode(response.body);
-        return LoginModel.fromJson(responseJson);
+        Provider.of<EmployeeInfoProvider>(Get.context!,listen: false).empId=jsonDecode(response.body)['id'];
+
+    return LoginModel.fromJson(responseJson);
+
       } else {
         return null;
       }
