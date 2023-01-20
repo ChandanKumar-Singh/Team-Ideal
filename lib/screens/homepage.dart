@@ -4,6 +4,7 @@ import 'package:dakshattendance/Model/offline_data_model.dart';
 import 'package:dakshattendance/const/global.dart';
 import 'package:dakshattendance/model/check_in_model.dart';
 import 'package:dakshattendance/model/check_out_model.dart';
+import 'package:dakshattendance/provider/EmployeeInfoProvider/EmployeeInfoProvider.dart';
 import 'package:dakshattendance/repository/repository.dart';
 import 'package:dakshattendance/screens/EmployeePaySlip/EmployeePaySlip.dart';
 import 'package:dakshattendance/screens/ManageEmployees/ManageEmployees.dart';
@@ -21,6 +22,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
 
 import '../Model/employeeSlipModel.dart';
@@ -622,6 +624,7 @@ class _MyHomepageState extends State<MyHomepage> {
                       // ),
                       GestureDetector(
                         onTap: () async {
+                          // Provider.of<EmployeeInfoProvider>(context,listen: false).getProfileData();
                           Get.to(ManageEmployees());
                         },
                         child: Container(

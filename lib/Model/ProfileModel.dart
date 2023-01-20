@@ -130,6 +130,8 @@ class Employee {
   String? treatment;
   String? treatmentdet;
   String? is_approved;
+  String? emergency_contact_person;
+  String? emergency_contact_no;
 
   Employee({
     this.id,
@@ -189,6 +191,8 @@ class Employee {
     this.treatment,
     this.treatmentdet,
     this.is_approved,
+    this.emergency_contact_person,
+    this.emergency_contact_no,
   });
 
   Employee.fromJson(Map<String, dynamic> json) {
@@ -249,6 +253,8 @@ class Employee {
     treatment = json['treatment'];
     treatmentdet = json['treatmentdet'];
     is_approved = json['is_approved'];
+    emergency_contact_person = json['emergency_contact_person'];
+    emergency_contact_no = json['emergency_contact_no'];
   }
 
   Map<String, dynamic> toJson() {
@@ -310,6 +316,8 @@ class Employee {
     data['treatment'] = this.treatment;
     data['treatmentdet'] = this.treatmentdet;
     data['is_approved'] = this.is_approved;
+    data['emergency_contact_person'] = this.emergency_contact_person;
+    data['emergency_contact_no'] = this.emergency_contact_no;
     return data;
   }
 }

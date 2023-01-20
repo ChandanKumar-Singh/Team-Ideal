@@ -24,7 +24,6 @@ class _LoginPageState extends State<LoginPage> {
   bool autoValidate = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-
   final _repository = Repository();
   bool isClick = false;
 
@@ -139,11 +138,16 @@ class _LoginPageState extends State<LoginPage> {
 
   dynamic onLoginAPI() async {
     Loader().showLoader(context);
-    final LoginModel isLogin =
-        await _repository.onLogin(emailController.text, password.text);
+     LoginModel isLogin = LoginModel();
+    try {
+     isLogin= await _repository.onLogin(emailController.text, password.text);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    // Loader().hideLoader(context);
+
     if (isLogin.status == "Success") {
       PrefObj.preferences!.put(PrefKeys.USERDATA, json.encode(isLogin));
-      Loader().hideLoader(context);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -152,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else {
       Loader().hideLoader(context);
-      showpopDialog(context, 'Opps', isLogin.message!);
+      // showpopDialog(context, 'Opps', isLogin.message!);
     }
   }
 

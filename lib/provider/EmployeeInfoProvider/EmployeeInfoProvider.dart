@@ -17,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EmployeeInfoProvider extends ChangeNotifier {
   String tag = 'EmployeeInfoProvider';
@@ -26,14 +27,19 @@ class EmployeeInfoProvider extends ChangeNotifier {
   ProfileData? profileData;
   bool approved = false;
   bool loadingProfileData = false;
-
+  late SharedPreferences prefs;
   Future<void> getProfileData() async {
     var response;
+    prefs = await SharedPreferences.getInstance();
+    empId=prefs.getString('empId')??'';
     try {
+      debugPrint('$tag getProfileData ');
       loadingProfileData = true;
       notifyListeners();
       Map<String, String> headers = {"Accept": "*/*"};
-      var url = AppConst.baseUrl + AppConst.edit_profile + 'emp_id=$empId';
+      var url = AppConst.baseUrl +
+          AppConst.edit_profile +
+          'emp_id=${empId}';
       bool cacheExist =
           await APICacheManager().isAPICacheKeyExist('profileData');
       var res = await http.get(Uri.parse(url), headers: headers);

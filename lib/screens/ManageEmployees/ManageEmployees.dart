@@ -15,6 +15,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class ManageEmployees extends StatefulWidget {
@@ -26,19 +27,30 @@ class ManageEmployees extends StatefulWidget {
 
 class _ManageEmployeesState extends State<ManageEmployees> {
   int activeStep = 0;
-  TextEditingController fncontroller = TextEditingController();
+  TextEditingController fnController = TextEditingController();
 
   ///ScrollControllers
   // ScrollController step1ScrollController = ScrollController();
+  void init() async {
+    var ep = Provider.of<EmployeeInfoProvider>(context, listen: false);
+    ep.loadingProfileData = true;
+    // Future.delayed(Duration(seconds: 2), () async {
+    await ep.getProfileData();
+    // ep.loadingProfileData = true;
+    // setState(() {});
+    await ep.getStates();
+    await ep.getPrincipalCompanies();
+    await ep.getWorkingFor();
+    // ep.loadingProfileData = false;
+    // setState(() {});
+    // });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    var ep = Provider.of<EmployeeInfoProvider>(context, listen: false);
-    ep.getProfileData();
-    ep.getStates();
-    ep.getPrincipalCompanies();
-    ep.getWorkingFor();
+    init();
   }
 
   ///Form Keys
@@ -47,6 +59,8 @@ class _ManageEmployeesState extends State<ManageEmployees> {
   final GlobalKey<FormState> step3FormKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        'is Profile data loading ${Provider.of<EmployeeInfoProvider>(context, listen: false).loadingProfileData}');
     return WillPopScope(
       onWillPop: () async {
         bool willExit = false;
@@ -65,6 +79,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
             btnOkOnPress: () {
               var ep =
                   Provider.of<EmployeeInfoProvider>(context, listen: false);
+              ep.selectGender = null;
               ep.educations.clear();
               ep.fieldControl2.clear();
               ep.fieldControl6.clear();
@@ -91,6 +106,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   lineDotRadius: 3,
                   lineSpace: 5,
                   lineType: LineType.normal,
+                  enableStepTapping: false,
                   lineColor: AppColor.appColor2.withOpacity(0.7),
                   borderThickness: 5,
                   padding: 15,
@@ -181,23 +197,43 @@ class _ManageEmployeesState extends State<ManageEmployees> {
             onPressed: () async {
               if (activeStep == 0) {
                 bool? validate = step1FormKey.currentState?.validate();
+                print('$activeStep validate $validate');
                 if (validate != null && validate) {
                   setState(() {
                     activeStep++;
                   });
+                } else {
+                  Fluttertoast.showToast(
+                      msg: 'Please feel all required fields');
                 }
+                print('$activeStep validate $validate');
               } else if (activeStep == 1) {
                 bool? validate = step2FormKey.currentState?.validate();
-                print('$activeStep validate $validate');
-                if (ep.approved) {
-                  await ep.uploadField1andForm2Docs();
+                bool genderSelected = genderField(ep);
+                print('$activeStep validate $validate  $genderSelected');
+                if (validate != null && validate && genderSelected) {
+                  if (ep.approved) {
+                    await ep
+                        .uploadField1andForm2Docs()
+                        .then((value) => setState(
+                              () {
+                                activeStep++;
+                              },
+                            ));
+                  } else {
+                    setState(
+                      () {
+                        activeStep++;
+                      },
+                    );
+                  }
+                } else {
+                  Fluttertoast.showToast(
+                      msg: 'Please feel all required fields');
                 }
-                setState(() {
-                  activeStep++;
-                });
-                // }
+                print('$activeStep validate $validate');
               } else if (activeStep == 2) {
-                // bool? validate = step2FormKey.currentState?.validate();
+                bool? validate = step2FormKey.currentState?.validate();
                 // print('$activeStep validate $validate');
                 // if (validate != null && validate) {
                 if (ep.approved) {
@@ -267,7 +303,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
           ['Last Name', emp.lastNm ?? '', false, false, 'last_nm', ''],
           ['Employee Code', emp.empCode ?? '', true, false, 'emp_code', ''],
           ['Password', emp.password ?? '', true, false, 'fdfhdsds', ''],
-          ['Email Id', emp.email ?? '', false, false, 'email', ''],
+          ['Email Id', emp.email ?? '', false, true, 'email', ''],
           [
             'Official Email Id',
             emp.officialemail ?? '',
@@ -284,7 +320,14 @@ class _ManageEmployeesState extends State<ManageEmployees> {
             'altemail',
             ''
           ],
-          ['Official Mobile No.', '', false, false, 'off_mob_no', ''],
+          [
+            'Official Mobile No.',
+            emp.mobileno ?? '',
+            false,
+            true,
+            'mobileno',
+            ''
+          ],
           [
             'Alternate Mobile No.',
             emp.altmobileno ?? '',
@@ -297,17 +340,17 @@ class _ManageEmployeesState extends State<ManageEmployees> {
             'Current Address',
             emp.curaddress ?? '',
             false,
-            false,
+            true,
             'curaddress',
             ''
           ],
-          ['Grade', emp.grade ?? '', false, false, 'grade', ''],
+          // ['Grade', emp.grade ?? '', false, false, 'grade', ''],
           ['PF No', emp.panNo ?? '', false, false, 'pfno', ''],
           ['ESIC No', emp.esicNo ?? '', false, false, 'esic_no', ''],
           ['Education', emp.education ?? '', false, false, 'education', ''],
           ['DOB', emp.dob, false, false, 'dob', ''],
           ['Age', emp.age ?? '', false, false, 'age', ''],
-          ['Contract End Date', emp.cenddt ?? '', true, false, 'cenddt', ''],
+          // ['Contract End Date', emp.cenddt ?? '', true, false, 'cenddt', ''],
           // ['State', emp.state ?? '', false, false,'erefefced,'],
           [
             'Designation',
@@ -318,35 +361,51 @@ class _ManageEmployeesState extends State<ManageEmployees> {
             ''
           ],
           ['Joining Date', emp.joindt, true, false, 'joindt', 'date'],
-          ['Resignation Date', emp.resigndt, false, false, 'resigndt', ''],
-          ['Leave Date', emp.leavedt, false, false, 'leavedt', ''],
+          // ['Resignation Date', emp.resigndt, false, false, 'resigndt', ''],
+          // ['Leave Date', emp.leavedt, false, false, 'leavedt', ''],
           ['Location', emp.location ?? '', false, false, 'location', ''],
-          ['Bank Name', emp.banknm ?? '', false, false, 'banknm', ''],
-          ['Account No', emp.accno ?? '', false, false, 'accno', ''],
+          ['Bank Name', emp.banknm ?? '', false, true, 'banknm', ''],
+          ['Account No', emp.accno ?? '', false, true, 'accno', ''],
           ['Bank City', emp.bankcity ?? '', false, false, 'bankcity', ''],
-          ['Branch', emp.branch ?? '', false, false, 'branch', ''],
-          ['IFSC Code', emp.ifsc ?? '', false, false, 'ifsc', ''],
-          ['Aadhar Card No', emp.aadharno ?? '', false, false, 'aadharno', ''],
-          ['Remarks', emp.remarks ?? '', false, false, 'remarks', ''],
+          ['Branch', emp.branch ?? '', false, true, 'branch', ''],
+          ['IFSC Code', emp.ifsc ?? '', false, true, 'ifsc', ''],
+          ['Aadhar Card No', emp.aadharno ?? '', false, true, 'aadharno', ''],
+          // ['Remarks', emp.remarks ?? '', false, false, 'remarks', ''],
           ['Supervisor', emp.supervisor ?? '', false, false, 'supervisor', ''],
-          ['UAN No', 'uan_no', false, false, 'uan_no', ''],
-          ['PAN NO', emp.panNo ?? '', false, false, 'pan_no', ''],
+          ['UAN No', '', false, false, 'uan_no', ''],
+          ['PAN NO', emp.panNo ?? '', false, true, 'pan_no', ''],
+          // [
+          //   'Reporting HR Name',
+          //   emp.rephrName ?? '',
+          //   false,
+          //   false,
+          //   'rephr_name',
+          //   ''
+          // ],
+          ['NUMBER', emp.mobileno, false, false, 'mobileno', ''],
+          ['Nominee Name', emp.nomiName ?? '', false, true, 'nomi_name', ''],
+          ['Nominee Mobile No', emp.nomiNo ?? '', false, true, 'nomi_no', ''],
           [
-            'Reporting HR Name',
-            emp.rephrName ?? '',
+            'Emergency Contact Person',
+            emp.emergency_contact_person ?? '',
             false,
             false,
-            'rephr_name',
+            'emergency_contact_person',
             ''
           ],
-          ['NUMBER', emp.mobileno, false, false, 'mobileno', ''],
-          ['Nominee Name', emp.nomiName ?? '', false, false, 'nomi_name', ''],
-          ['Nominee Mobile No', emp.nomiNo ?? '', false, false, 'nomi_no', ''],
+          [
+            'Emergency Contact No.',
+            emp.emergency_contact_no ?? '',
+            false,
+            false,
+            'emergency_contact_no',
+            ''
+          ],
           [
             'Nominee Relationship',
             emp.nomiRel ?? '',
             false,
-            false,
+            true,
             'nomi_rel',
             ''
           ],
@@ -354,11 +413,11 @@ class _ManageEmployeesState extends State<ManageEmployees> {
             'Nominee Date of proof',
             emp.nomineedt,
             false,
-            false,
+            true,
             'nomineedt',
             ''
           ],
-          ['Nominee Address', emp.nomiAdd ?? '', false, false, 'nomi_add', ''],
+          ['Nominee Address', emp.nomiAdd ?? '', false, true, 'nomi_add', ''],
         ],
       );
     }
@@ -376,7 +435,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   value: ep.profileData!.employee!.state ?? '')
               : null,
           false,
-          true,
+          false,
           ep.states,
         ],
         [
@@ -387,7 +446,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   value: ep.profileData!.employee!.principalComp ?? '')
               : null,
           false,
-          true,
+          false,
           ep.principalCompanies,
         ],
         [
@@ -508,9 +567,10 @@ class _FieldControlState extends State<FieldControl> {
             children: [
               ...fieldControl.map((e) {
                 int i = fieldControl.indexOf(e);
-                debugPrint('fieldControl length is ${fieldControl.length}');
-                debugPrint('form type is ${fieldControl[i][4]}');
-                debugPrint('form type is ${fieldControl[i].length}');
+                // debugPrint('fieldControl length is ${fieldControl.length}');
+                debugPrint(
+                    '${fieldControl[i][4]} is required ${fieldControl[i][3]}');
+                // debugPrint('form type is ${fieldControl[i].length}');
 
                 return Padding(
                   padding:
@@ -562,6 +622,25 @@ class FieldControl2 extends StatefulWidget {
 
   @override
   State<FieldControl2> createState() => _FieldControl2State();
+}
+
+bool genderField(EmployeeInfoProvider ep) {
+  bool selected = false;
+  print('checeeking gender ${ep.selectGender != null}');
+  print('checeeking gender ${ep.selectGender != ''}');
+  print('checeeking gender ${ep.selectGender}');
+  print('checeeking gender ${ep.profileData!.employee!.gender != null}');
+  print('checeeking gender ${ep.profileData!.employee!.gender != ''}');
+  print(
+      'checeeking gender ${(ep.selectGender != null && (ep.profileData!.employee!.gender != null || ep.profileData!.employee!.gender != ''))}');
+  if ((ep.selectGender != null && ep.selectGender != '') &&
+      (ep.profileData!.employee!.gender != null ||
+          ep.profileData!.employee!.gender != '')) {
+    selected = true;
+  } else {
+    selected = false;
+  }
+  return selected;
 }
 
 class _FieldControl2State extends State<FieldControl2> {
@@ -637,6 +716,8 @@ class _FieldControl2State extends State<FieldControl2> {
             children: [
               ...ep.fieldControl2.map((e) {
                 int i = ep.fieldControl2.indexOf(e);
+                print(
+                    '${ep.fieldControl2[i][0]} --- ${ep.fieldControl2[i][3]}');
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -729,6 +810,21 @@ class _FieldControl2State extends State<FieldControl2> {
                                   ep.selectGender;
                             });
                           }),
+                      if (!genderField(ep))
+                        Row(
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  'Gender field is required. ',
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.red),
+                                ),
+                                SizedBox(height: 10),
+                              ],
+                            ),
+                          ],
+                        )
                     ],
                   ),
                   if (!ep.approved)
@@ -1057,7 +1153,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Consumer<EmployeeInfoProvider>(builder: (context, ep, _) {
-      debugPrint('User has permission to edit ${ep.approved}');
+      // debugPrint('User has permission to edit ${ep.approved}');
       return Column(
         children: [
           if (widget.title != null)
@@ -1097,6 +1193,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       suffixIcon: ep.approved &&
+                              (widget.readOnly != null && !widget.readOnly!) &&
                               widget.formType != null &&
                               widget.formType == 'date'
                           ? IconButton(
@@ -1131,14 +1228,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     },
                     validator: (val) {
                       if (widget.required) {
-                        print(val);
-
+                        // print(val);
+                        print('validating a value is  $val');
                         if (val!.isEmpty) {
                           return '${widget.title} is required';
                         }
                       } else {
                         print('No');
+                        return null;
                       }
+                      return null;
                     },
                     onEditingComplete: () {
                       // print('Editing completed');
@@ -1241,7 +1340,7 @@ class _CustomDropDownFieldState extends State<CustomDropDownField> {
                   searchDecoration: InputDecoration(hintText: widget.label),
                   validator: (value) {
                     debugPrint('validate $value');
-                    if (value == null || value == '') {
+                    if (value == null || value == '' && widget.required) {
                       return "Required field";
                     } else {
                       return null;
@@ -1407,7 +1506,7 @@ class _EduCardState extends State<EduCard> {
                   },
                   title: 'Examination Passed',
                   label: '',
-                  required: true,
+                  required: false,
                   controller:
                       TextEditingController(text: widget.e.examPassed ?? ''),
                 ),
@@ -1821,14 +1920,15 @@ class _DownloadAndUploadDocState extends State<DownloadAndUploadDoc> {
       });
       bool uploaded =
           ep.profileData!.documents!.toJson().entries.firstWhere((element) {
-                print(element);
-                return element.key == widget.field;
-              }).value !=
-              ''&& ep.profileData!.documents!.toJson().entries.firstWhere((element) {
-            print(element);
-            return element.key == widget.field;
-          }).value !=
-              null;
+                    print(element);
+                    return element.key == widget.field;
+                  }).value !=
+                  '' &&
+              ep.profileData!.documents!.toJson().entries.firstWhere((element) {
+                    print(element);
+                    return element.key == widget.field;
+                  }).value !=
+                  null;
       return Row(
         children: [
           Expanded(
@@ -1893,8 +1993,10 @@ void downloadSample(String url) async {
     path = await getDownloadPath();
     var filePath = '$path/${url.split('/').last}';
     if (path != null) {
+      bool hasPermission = await Permission.manageExternalStorage.isGranted;
+      await Permission.manageExternalStorage.request();
       var response = await Dio().download(
-        'http://www.google.com',
+        url,
         filePath,
         // options: Options(headers: {HttpHeaders.acceptEncodingHeader: "*"}),
         onReceiveProgress: ((pr, st) {

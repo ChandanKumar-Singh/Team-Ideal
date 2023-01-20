@@ -12,220 +12,226 @@
 12         to allow setting breakpoints, to provide hot reload, etc.
 13    -->
 14    <uses-permission android:name="android.permission.INTERNET" />
-14-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:5:1-63
-14-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:5:18-60
+14-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:8:1-63
+14-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:8:18-60
 15    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 15-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:3:5-79
 15-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:3:22-76
-16    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Provide required visibility configuration for API level 30 and above -->
+16    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 16-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:4:1-77
 16-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:4:18-74
-17    <queries>
-17-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:48:5-65:15
-18
-19        <!-- If your app checks for SMS support -->
-20        <intent>
-20-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:50:9-53:18
-21            <action android:name="android.intent.action.VIEW" />
-21-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:51:13-65
-21-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:51:21-62
-22
-23            <data android:scheme="sms" />
-23-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:52:13-42
-23-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:52:19-39
-24        </intent>
-25        <!-- If your app checks for call support -->
-26        <intent>
-26-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:9-58:18
-27            <action android:name="android.intent.action.VIEW" />
-27-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:51:13-65
-27-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:51:21-62
-28
-29            <data android:scheme="tel" />
-29-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:52:13-42
-29-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:52:19-39
-30        </intent>
-31        <!-- Place inside the <queries> element. -->
-32        <intent>
-32-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:60:9-64:18
-33            <action android:name="android.intent.action.VIEW" />
-33-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:51:13-65
-33-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:51:21-62
-34
-35            <category android:name="android.intent.category.BROWSABLE" />
-35-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:62:13-74
-35-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:62:23-71
-36
-37            <data android:scheme="https" />
-37-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:52:13-42
-37-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:52:19-39
-38        </intent>
-39        <intent>
-39-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:10:9-14:18
-40            <action android:name="android.intent.action.GET_CONTENT" />
-40-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-72
-40-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:21-69
-41
-42            <data android:mimeType="*/*" />
-42-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:52:13-42
-43        </intent>
-44    </queries>
-45
-46    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-46-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-77
-46-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-74
-47    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-47-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-79
-47-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-76
-48    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-48-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-76
-48-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-73
-49    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-49-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-80
-49-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-77
-50
-51    <application
-51-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:7:4-46:19
-52        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-52-->[androidx.core:core:1.8.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\8e86e615f21ac3758e97e94e18045107\core-1.8.0\AndroidManifest.xml:24:18-86
-53        android:debuggable="true"
-54        android:icon="@mipmap/launcher_icon"
-54-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:9:9-45
-55        android:label="Team Ideal"
-55-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:8:9-35
-56        android:roundIcon="@mipmap/ic_launcher_round" >
-56-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:10:8-53
-57        <activity
-57-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:11:9-40:20
-58            android:name="com.hrms.team_ideal.MainActivity"
-58-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:12:13-41
-59            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-59-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:15:13-163
-60            android:exported="true"
-60-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:18:13-36
-61            android:hardwareAccelerated="true"
-61-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:16:13-47
-62            android:launchMode="singleTop"
-62-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:13:13-43
-63            android:theme="@style/LaunchTheme"
-63-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:14:13-47
-64            android:windowSoftInputMode="adjustResize" >
-64-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:17:13-55
-65
-66            <!--
-67                 Specifies an Android theme to apply to this Activity as soon as
-68                 the Android process has started. This theme is visible to the user
-69                 while the Flutter UI initializes. After that, this theme continues
-70                 to determine the Window background behind the Flutter UI.
-71            -->
-72            <meta-data
-72-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:23:13-26:17
-73                android:name="io.flutter.embedding.android.NormalTheme"
-73-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:24:15-70
-74                android:resource="@style/NormalTheme" />
-74-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:25:15-52
-75            <!--
-76                 Displays an Android View that continues showing the launch screen
-77                 Drawable until Flutter paints its first frame, then this splash
-78                 screen fades out. A splash screen is useful to avoid any visual
-79                 gap between the end of Android's launch screen and the painting of
-80                 Flutter's first frame.
-81            -->
-82            <meta-data
-82-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:32:13-35:17
-83                android:name="io.flutter.embedding.android.SplashScreenDrawable"
-83-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:33:15-79
-84                android:resource="@drawable/launch_background" />
-84-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:34:15-61
-85
-86            <intent-filter>
-86-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:36:13-39:29
-87                <action android:name="android.intent.action.MAIN" />
-87-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:37:17-68
-87-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:37:25-66
-88
-89                <category android:name="android.intent.category.LAUNCHER" />
-89-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:38:17-76
-89-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:38:27-74
-90            </intent-filter>
-91        </activity>
-92        <!--
-93             Don't delete the meta-data below.
-94             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
-95        -->
-96        <meta-data
-96-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:43:9-45:33
-97            android:name="flutterEmbedding"
-97-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:44:13-44
-98            android:value="2" />
-98-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:45:13-30
-99
-100        <service
-100-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:10:9-14:56
-101            android:name="com.baseflow.geolocator.GeolocatorLocationService"
-101-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-77
-102            android:enabled="true"
-102-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-35
-103            android:exported="false"
-103-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-37
-104            android:foregroundServiceType="location" />
-104-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:14:13-53
-105
-106        <activity
-106-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-11:74
-107            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
-107-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-74
-108            android:exported="false"
-108-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-37
-109            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-109-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-71
-110
-111        <provider
-111-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-16:20
-112            android:name="net.nfet.flutter.printing.PrintFileProvider"
-112-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-71
-113            android:authorities="com.hrms.team_ideal.flutter.printing"
-113-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-68
-114            android:exported="false"
-114-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
-115            android:grantUriPermissions="true" >
-115-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
-116            <meta-data
-116-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:71
-117                android:name="android.support.FILE_PROVIDER_PATHS"
-117-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
-118                android:resource="@xml/flutter_printing_file_paths" />
-118-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-68
-119        </provider>
-120
-121        <uses-library
-121-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
-122            android:name="androidx.window.extensions"
-122-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:26:13-54
-123            android:required="false" />
-123-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:27:13-37
-124        <uses-library
-124-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:28:9-30:40
-125            android:name="androidx.window.sidecar"
-125-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:29:13-51
-126            android:required="false" />
-126-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:30:13-37
-127
-128        <activity
-128-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:9-22:45
-129            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-129-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:19-85
-130            android:exported="false"
-130-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:22:19-43
-131            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-131-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:21:19-78
-132
-133        <meta-data
-133-->[com.google.android.gms:play-services-basement:18.0.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\65c8b9154009d1931a3db50d7627d9e4\jetified-play-services-basement-18.0.0\AndroidManifest.xml:21:9-23:69
-134            android:name="com.google.android.gms.version"
-134-->[com.google.android.gms:play-services-basement:18.0.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\65c8b9154009d1931a3db50d7627d9e4\jetified-play-services-basement-18.0.0\AndroidManifest.xml:22:13-58
-135            android:value="@integer/google_play_services_version" />
-135-->[com.google.android.gms:play-services-basement:18.0.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\65c8b9154009d1931a3db50d7627d9e4\jetified-play-services-basement-18.0.0\AndroidManifest.xml:23:13-66
-136    </application>
-137
-138</manifest>
+17    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+17-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:5:1-76
+17-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:5:18-73
+18    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+18-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:6:1-77
+18-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:6:18-74
+19    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- Provide required visibility configuration for API level 30 and above -->
+19-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:7:1-78
+19-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:7:18-75
+20    <queries>
+20-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:51:5-68:15
+21
+22        <!-- If your app checks for SMS support -->
+23        <intent>
+23-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:53:9-56:18
+24            <action android:name="android.intent.action.VIEW" />
+24-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:54:13-65
+24-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:54:21-62
+25
+26            <data android:scheme="sms" />
+26-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:13-42
+26-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:19-39
+27        </intent>
+28        <!-- If your app checks for call support -->
+29        <intent>
+29-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:58:9-61:18
+30            <action android:name="android.intent.action.VIEW" />
+30-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:54:13-65
+30-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:54:21-62
+31
+32            <data android:scheme="tel" />
+32-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:13-42
+32-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:19-39
+33        </intent>
+34        <!-- Place inside the <queries> element. -->
+35        <intent>
+35-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:63:9-67:18
+36            <action android:name="android.intent.action.VIEW" />
+36-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:54:13-65
+36-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:54:21-62
+37
+38            <category android:name="android.intent.category.BROWSABLE" />
+38-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:65:13-74
+38-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:65:23-71
+39
+40            <data android:scheme="https" />
+40-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:13-42
+40-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:19-39
+41        </intent>
+42        <intent>
+42-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:10:9-14:18
+43            <action android:name="android.intent.action.GET_CONTENT" />
+43-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-72
+43-->[:file_picker] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\file_picker\intermediates\library_manifest\debug\AndroidManifest.xml:11:21-69
+44
+45            <data android:mimeType="*/*" />
+45-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:55:13-42
+46        </intent>
+47    </queries>
+48
+49    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+49-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-77
+49-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-74
+50    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+50-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:5-79
+50-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:7:22-76
+51    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+51-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:8:5-76
+51-->[:network_info_plus] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\network_info_plus\intermediates\library_manifest\debug\AndroidManifest.xml:8:22-73
+52
+53    <application
+53-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:10:4-49:19
+54        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+54-->[androidx.core:core:1.8.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\8e86e615f21ac3758e97e94e18045107\core-1.8.0\AndroidManifest.xml:24:18-86
+55        android:debuggable="true"
+56        android:icon="@mipmap/launcher_icon"
+56-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:12:9-45
+57        android:label="Team Ideal"
+57-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:11:9-35
+58        android:roundIcon="@mipmap/ic_launcher_round" >
+58-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:13:8-53
+59        <activity
+59-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:14:9-43:20
+60            android:name="com.hrms.team_ideal.MainActivity"
+60-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:15:13-41
+61            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+61-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:18:13-163
+62            android:exported="true"
+62-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:21:13-36
+63            android:hardwareAccelerated="true"
+63-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:19:13-47
+64            android:launchMode="singleTop"
+64-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:16:13-43
+65            android:theme="@style/LaunchTheme"
+65-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:17:13-47
+66            android:windowSoftInputMode="adjustResize" >
+66-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:20:13-55
+67
+68            <!--
+69                 Specifies an Android theme to apply to this Activity as soon as
+70                 the Android process has started. This theme is visible to the user
+71                 while the Flutter UI initializes. After that, this theme continues
+72                 to determine the Window background behind the Flutter UI.
+73            -->
+74            <meta-data
+74-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:26:13-29:17
+75                android:name="io.flutter.embedding.android.NormalTheme"
+75-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:27:15-70
+76                android:resource="@style/NormalTheme" />
+76-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:28:15-52
+77            <!--
+78                 Displays an Android View that continues showing the launch screen
+79                 Drawable until Flutter paints its first frame, then this splash
+80                 screen fades out. A splash screen is useful to avoid any visual
+81                 gap between the end of Android's launch screen and the painting of
+82                 Flutter's first frame.
+83            -->
+84            <meta-data
+84-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:35:13-38:17
+85                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+85-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:36:15-79
+86                android:resource="@drawable/launch_background" />
+86-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:37:15-61
+87
+88            <intent-filter>
+88-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:39:13-42:29
+89                <action android:name="android.intent.action.MAIN" />
+89-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:40:17-68
+89-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:40:25-66
+90
+91                <category android:name="android.intent.category.LAUNCHER" />
+91-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:41:17-76
+91-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:41:27-74
+92            </intent-filter>
+93        </activity>
+94        <!--
+95             Don't delete the meta-data below.
+96             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+97        -->
+98        <meta-data
+98-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:46:9-48:33
+99            android:name="flutterEmbedding"
+99-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:47:13-44
+100            android:value="2" />
+100-->D:\Office Projects\team_ideal_hrms\team-ideal-hrms\android\app\src\main\AndroidManifest.xml:48:13-30
+101
+102        <service
+102-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:10:9-14:56
+103            android:name="com.baseflow.geolocator.GeolocatorLocationService"
+103-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-77
+104            android:enabled="true"
+104-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-35
+105            android:exported="false"
+105-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-37
+106            android:foregroundServiceType="location" />
+106-->[:geolocator_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\geolocator_android\intermediates\library_manifest\debug\AndroidManifest.xml:14:13-53
+107
+108        <activity
+108-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-11:74
+109            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+109-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-74
+110            android:exported="false"
+110-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-37
+111            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+111-->[:url_launcher_android] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\url_launcher_android\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-71
+112
+113        <provider
+113-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:8:9-16:20
+114            android:name="net.nfet.flutter.printing.PrintFileProvider"
+114-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:9:13-71
+115            android:authorities="com.hrms.team_ideal.flutter.printing"
+115-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:10:13-68
+116            android:exported="false"
+116-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:11:13-37
+117            android:grantUriPermissions="true" >
+117-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:12:13-47
+118            <meta-data
+118-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:13:13-15:71
+119                android:name="android.support.FILE_PROVIDER_PATHS"
+119-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:14:17-67
+120                android:resource="@xml/flutter_printing_file_paths" />
+120-->[:printing] D:\Office Projects\team_ideal_hrms\team-ideal-hrms\build\printing\intermediates\library_manifest\debug\AndroidManifest.xml:15:17-68
+121        </provider>
+122
+123        <uses-library
+123-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
+124            android:name="androidx.window.extensions"
+124-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:26:13-54
+125            android:required="false" />
+125-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:27:13-37
+126        <uses-library
+126-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:28:9-30:40
+127            android:name="androidx.window.sidecar"
+127-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:29:13-51
+128            android:required="false" />
+128-->[androidx.window:window:1.0.0-beta04] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\03c633e46d75bfb21f082f0417f55161\jetified-window-1.0.0-beta04\AndroidManifest.xml:30:13-37
+129
+130        <activity
+130-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:9-22:45
+131            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+131-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:19-85
+132            android:exported="false"
+132-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:22:19-43
+133            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+133-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\642cc9e2632e586d1058ed231591ead4\jetified-play-services-base-18.0.1\AndroidManifest.xml:21:19-78
+134
+135        <meta-data
+135-->[com.google.android.gms:play-services-basement:18.0.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\65c8b9154009d1931a3db50d7627d9e4\jetified-play-services-basement-18.0.0\AndroidManifest.xml:21:9-23:69
+136            android:name="com.google.android.gms.version"
+136-->[com.google.android.gms:play-services-basement:18.0.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\65c8b9154009d1931a3db50d7627d9e4\jetified-play-services-basement-18.0.0\AndroidManifest.xml:22:13-58
+137            android:value="@integer/google_play_services_version" />
+137-->[com.google.android.gms:play-services-basement:18.0.0] C:\Users\PC\.gradle\caches\transforms-2\files-2.1\65c8b9154009d1931a3db50d7627d9e4\jetified-play-services-basement-18.0.0\AndroidManifest.xml:23:13-66
+138    </application>
+139
+140</manifest>
