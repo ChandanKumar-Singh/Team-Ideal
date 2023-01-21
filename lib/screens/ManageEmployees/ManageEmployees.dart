@@ -117,11 +117,11 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                       title: 'Employee Profile',
                       lineText: 'Add Education',
                     ),
-                    EasyStep(
-                      icon: Icon(CupertinoIcons.drop),
-                      title: 'Dependencies',
-                      lineText: 'Multi Forms',
-                    ),
+                    // EasyStep(
+                    //   icon: Icon(CupertinoIcons.drop),
+                    //   title: 'Dependencies',
+                    //   lineText: 'Multi Forms',
+                    // ),
                     EasyStep(
                       icon: Icon(CupertinoIcons.book),
                       title: 'Education',
@@ -155,16 +155,16 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                           child: activeStep == 0
                               ? step1FieldControl(ep)
                               : activeStep == 1
-                                  ? step2FieldControl(ep)
+                                  // ? step2FieldControl(ep)
+                                  // : activeStep == 2
+                                  ? EducationCard()
                                   : activeStep == 2
-                                      ? EducationCard()
+                                      ? PreviousJobCard()
                                       : activeStep == 3
-                                          ? PreviousJobCard()
+                                          ? ReferencesForm()
                                           : activeStep == 4
-                                              ? ReferencesForm()
-                                              : activeStep == 5
-                                                  ? step6FieldControl(ep)
-                                                  : SizedBox(),
+                                              ? step6FieldControl(ep)
+                                              : SizedBox(),
                         ),
                 ),
               ],
@@ -197,21 +197,16 @@ class _ManageEmployeesState extends State<ManageEmployees> {
             onPressed: () async {
               if (activeStep == 0) {
                 bool? validate = step1FormKey.currentState?.validate();
-                print('$activeStep validate $validate');
-                if (validate != null && validate) {
-                  setState(() {
-                    activeStep++;
-                  });
-                } else {
-                  Fluttertoast.showToast(
-                      msg: 'Please feel all required fields');
-                }
-                print('$activeStep validate $validate');
-              } else if (activeStep == 1) {
-                bool? validate = step2FormKey.currentState?.validate();
+                bool? validate2 = step2FormKey.currentState?.validate();
                 bool genderSelected = genderField(ep);
-                print('$activeStep validate $validate  $genderSelected');
-                if (validate != null && validate && genderSelected) {
+                print(
+                    '$activeStep validate1 $validate  validate2 $validate2  $genderSelected');
+                if (validate != null && validate
+                    // &&
+                    // validate2 != null &&
+                    // validate2 &&
+                    // genderSelected
+                    ) {
                   if (ep.approved) {
                     await ep
                         .uploadField1andForm2Docs()
@@ -231,9 +226,46 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   Fluttertoast.showToast(
                       msg: 'Please feel all required fields');
                 }
-                print('$activeStep validate $validate');
-              } else if (activeStep == 2) {
-                bool? validate = step2FormKey.currentState?.validate();
+
+                // print('$activeStep validate $validate');
+                // if (validate != null && validate) {
+                //   setState(() {
+                //     activeStep++;
+                //   });
+                // } else {
+                //   Fluttertoast.showToast(
+                //       msg: 'Please feel all required fields');
+                // }
+                // print('$activeStep validate $validate');
+              }
+              // else if (activeStep == 1) {
+              //   bool? validate = step2FormKey.currentState?.validate();
+              //   bool genderSelected = genderField(ep);
+              //   print('$activeStep validate $validate  $genderSelected');
+              //   if (validate != null && validate && genderSelected) {
+              //     if (ep.approved) {
+              //       await ep
+              //           .uploadField1andForm2Docs()
+              //           .then((value) => setState(
+              //                 () {
+              //                   activeStep++;
+              //                 },
+              //               ));
+              //     } else {
+              //       setState(
+              //         () {
+              //           activeStep++;
+              //         },
+              //       );
+              //     }
+              //   } else {
+              //     Fluttertoast.showToast(
+              //         msg: 'Please feel all required fields');
+              //   }
+              //   print('$activeStep validate $validate');
+              // }
+              else if (activeStep == 1) {
+                // bool? validate = step2FormKey.currentState?.validate();
                 // print('$activeStep validate $validate');
                 // if (validate != null && validate) {
                 if (ep.approved) {
@@ -243,7 +275,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   activeStep++;
                 });
                 // }
-              } else if (activeStep == 3) {
+              } else if (activeStep == 2) {
                 // bool? validate = step2FormKey.currentState?.validate();
                 // print('$activeStep validate $validate');
                 // if (validate != null && validate) {
@@ -254,7 +286,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   activeStep++;
                 });
                 // }
-              } else if (activeStep == 4) {
+              } else if (activeStep == 3) {
                 // bool? validate = step2FormKey.currentState?.validate();
                 // print('$activeStep validate $validate');
                 // if (validate != null && validate) {
@@ -265,7 +297,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                   activeStep++;
                 });
                 // }
-              } else if (activeStep == 5) {
+              } else if (activeStep == 4) {
                 // bool? validate = step2FormKey.currentState?.validate();
                 if (ep.approved) {
                   await ep.uploadField6Docs();
@@ -275,11 +307,11 @@ class _ManageEmployeesState extends State<ManageEmployees> {
                 }
               } else {
                 setState(() {
-                  activeStep < 6 ? activeStep++ : null;
+                  activeStep < 4 ? activeStep++ : null;
                 });
               }
             },
-            label: Text(activeStep != 5
+            label: Text(activeStep != 4
                 ? 'Next'
                 : ep.approved
                     ? '📤 Update'
@@ -297,6 +329,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
       var emp = ep.profileData!.employee!;
       return FieldControl(
         formKey: step1FormKey,
+        step2FormKey: step2FormKey,
         fieldControl: [
           ['First Name', emp.firstNm ?? '', false, true, 'first_nm', ''],
           ['Middle Name', emp.middleNm ?? '', false, false, 'middle_nm', ''],
@@ -508,10 +541,14 @@ class _ManageEmployeesState extends State<ManageEmployees> {
 ///step1
 class FieldControl extends StatefulWidget {
   const FieldControl(
-      {Key? key, required this.fieldControl, required this.formKey})
+      {Key? key,
+      required this.fieldControl,
+      required this.formKey,
+      required this.step2FormKey})
       : super(key: key);
   final List<List> fieldControl;
   final GlobalKey<FormState> formKey;
+  final GlobalKey<FormState> step2FormKey;
 
   @override
   State<FieldControl> createState() => _FieldControlState();
@@ -603,6 +640,68 @@ class _FieldControlState extends State<FieldControl> {
               SizedBox(
                 height: 100,
               ),
+              FieldControl2(
+                formKey: widget.step2FormKey,
+                fieldControl: [
+                  [
+                    'State',
+                    ep.profileData!.employee!.state != null
+                        ? DropDownValueModel(
+                            name: ep.profileData!.employee!.state ?? "",
+                            value: ep.profileData!.employee!.state ?? '')
+                        : null,
+                    false,
+                    false,
+                    ep.states,
+                  ],
+                  [
+                    'Principle Company',
+                    ep.profileData!.employee!.principalComp != null
+                        ? DropDownValueModel(
+                            name: ep.profileData!.employee!.principalComp ?? "",
+                            value:
+                                ep.profileData!.employee!.principalComp ?? '')
+                        : null,
+                    false,
+                    false,
+                    ep.principalCompanies,
+                  ],
+                  [
+                    'Company Waiting For',
+                    ep.profileData!.employee!.workingFor != null
+                        ? DropDownValueModel(
+                            name: ep.profileData!.employee!.workingFor ?? "",
+                            value: ep.profileData!.employee!.workingFor ?? '')
+                        : null,
+                    false,
+                    false,
+                    ep.workingForCompanies,
+                  ],
+                  [
+                    'Zone',
+                    ep.profileData!.employee!.zone != null
+                        ? DropDownValueModel(
+                            name: ep.profileData!.employee!.zone ?? "",
+                            value: ep.profileData!.employee!.zone ?? '')
+                        : null,
+                    false,
+                    false,
+                    ep.workingForCompanies,
+                  ],
+                  [
+                    'Account Status',
+                    ep.profileData!.employee!.accountStatus != null
+                        ? DropDownValueModel(
+                            name: ep.profileData!.employee!.accountStatus ?? "",
+                            value:
+                                ep.profileData!.employee!.accountStatus ?? '')
+                        : null,
+                    false,
+                    false,
+                    ['Active', 'Deactive'],
+                  ],
+                ],
+              ),
             ],
           ),
         ),
@@ -629,13 +728,12 @@ bool genderField(EmployeeInfoProvider ep) {
   print('checeeking gender ${ep.selectGender != null}');
   print('checeeking gender ${ep.selectGender != ''}');
   print('checeeking gender ${ep.selectGender}');
-  print('checeeking gender ${ep.profileData!.employee!.gender != null}');
-  print('checeeking gender ${ep.profileData!.employee!.gender != ''}');
+  print('checeeking gender ${ep.selectGender.runtimeType}');
+  // print('checeeking gender ${ep.profileData!.employee!.gender != null}');
+  // print('checeeking gender ${ep.profileData!.employee!.gender != ''}');
   print(
-      'checeeking gender ${(ep.selectGender != null && (ep.profileData!.employee!.gender != null || ep.profileData!.employee!.gender != ''))}');
-  if ((ep.selectGender != null && ep.selectGender != '') &&
-      (ep.profileData!.employee!.gender != null ||
-          ep.profileData!.employee!.gender != '')) {
+      'checeeking gender ${(ep.selectGender != null && ep.selectGender != '' && ep.selectGender != 'null')}');
+  if ((ep.selectGender != null && ep.selectGender != '')) {
     selected = true;
   } else {
     selected = false;
@@ -685,6 +783,10 @@ class _FieldControl2State extends State<FieldControl2> {
     if (ep.profileData!.employee!.treatment != null) {
       ep.treatment = ep.profileData!.employee!.treatment;
     }
+    // if (ep.profileData!.employee!.gender != null) {
+    //   ep.selectGender = ep.profileData!.employee!.gender;
+    // }
+    setState(() {});
   }
 
   @override
@@ -702,232 +804,217 @@ class _FieldControl2State extends State<FieldControl2> {
       // debugPrint('${ep.profileData!.employee!.gender}');
       // debugPrint('${ep.profileData!.employee!.interviewed}');
       // debugPrint('${ep.profileData!.employee!.treatment}');
-      return Scrollbar(
-        controller: scrollController,
-        thickness: 10,
-        showTrackOnHover: true,
-        thumbVisibility: true,
-        interactive: true,
-        radius: const Radius.circular(10),
-        child: Form(
-          key: widget.formKey,
-          child: ListView(
-            controller: scrollController,
-            children: [
-              ...ep.fieldControl2.map((e) {
-                int i = ep.fieldControl2.indexOf(e);
-                print(
-                    '${ep.fieldControl2[i][0]} --- ${ep.fieldControl2[i][3]}');
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  child: SizedBox(
-                    height: 110,
-                    child: CustomDropDownField(
-                      title: ep.fieldControl2[i][0],
-                      options: <DropDownValueModel>[
-                        if (i == 0)
-                          ...ep.fieldControl2[i][4].map((state) =>
-                              DropDownValueModel(name: state, value: state)),
-                        if (i == 1)
-                          ...ep.fieldControl2[i][4].map((company) =>
-                              DropDownValueModel(
-                                  name: company, value: company)),
-                        if (i == 2)
-                          ...ep.fieldControl2[i][4].map((company) =>
-                              DropDownValueModel(
-                                  name: company.compNm, value: company.id)),
-                        if (i == 3)
-                          ...ep.zones.map((zone) =>
-                              DropDownValueModel(name: zone, value: zone)),
-                        if (i == 4)
-                          ...ep.fieldControl2[i][4].map((status) =>
-                              DropDownValueModel(name: status, value: status)),
-                      ],
-                      onChange: (val) {
-                        debugPrint(
-                            '${ep.fieldControl2[i][0]}  ${ep.field2controllers[i].dropDownValue}  $val');
-                        if (i == 0) {
-                          ep.selectedState = val.value;
-                        }
+      return Form(
+        key: widget.formKey,
+        child: Column(
+          // controller: scrollController,
+          children: [
+            ...ep.fieldControl2.map((e) {
+              int i = ep.fieldControl2.indexOf(e);
+              print('${ep.fieldControl2[i][0]} --- ${ep.fieldControl2[i][3]}');
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: SizedBox(
+                  height: 110,
+                  child: CustomDropDownField(
+                    title: ep.fieldControl2[i][0],
+                    options: <DropDownValueModel>[
+                      if (i == 0)
+                        ...ep.fieldControl2[i][4].map((state) =>
+                            DropDownValueModel(name: state, value: state)),
+                      if (i == 1)
+                        ...ep.fieldControl2[i][4].map((company) =>
+                            DropDownValueModel(name: company, value: company)),
+                      if (i == 2)
+                        ...ep.fieldControl2[i][4].map((company) =>
+                            DropDownValueModel(
+                                name: company.compNm, value: company.id)),
+                      if (i == 3)
+                        ...ep.zones.map((zone) =>
+                            DropDownValueModel(name: zone, value: zone)),
+                      if (i == 4)
+                        ...ep.fieldControl2[i][4].map((status) =>
+                            DropDownValueModel(name: status, value: status)),
+                    ],
+                    onChange: (val) {
+                      debugPrint(
+                          '${ep.fieldControl2[i][0]}  ${ep.field2controllers[i].dropDownValue}  $val');
+                      if (i == 0) {
+                        ep.selectedState = val.value;
+                      }
 
-                        if (i == 1) {
-                          ep.selectedPC = val.value;
-                        }
+                      if (i == 1) {
+                        ep.selectedPC = val.value;
+                      }
 
-                        if (i == 2) {
-                          ep.getZones();
-                          ep.selectedZone = null;
-                          ep.field2controllers[3].dropDownValue = null;
-                        }
+                      if (i == 2) {
+                        ep.getZones();
+                        ep.selectedZone = null;
+                        ep.field2controllers[3].dropDownValue = null;
+                      }
 
-                        if (i == 3) {
-                          ep.selectedZone = val.value;
-                        }
+                      if (i == 3) {
+                        ep.selectedZone = val.value;
+                      }
 
-                        if (i == 4) {
-                          ep.selectedAccStatus = val.value;
-                        }
-                      },
-                      isEnabled: i == 3 ? ep.zones.length != 0 : null,
-                      label: 'Select',
-                      required: ep.fieldControl2[i][3],
-                      controller: ep.field2controllers[i],
+                      if (i == 4) {
+                        ep.selectedAccStatus = val.value;
+                      }
+                    },
+                    isEnabled: i == 3 ? ep.zones.length != 0 : null,
+                    label: 'Select',
+                    required: ep.fieldControl2[i][3],
+                    controller: ep.field2controllers[i],
+                  ),
+                ),
+              );
+            }),
+            Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Select Gender:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                );
-              }),
-              Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select Gender:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    RadioListTile<String>(
+                        value: 'male',
+                        title: Text('Male'),
+                        groupValue: ep.selectGender,
+                        onChanged: (val) {
+                          setState(() {
+                            ep.selectGender = val!;
+                            ep.profileData!.employee!.gender = ep.selectGender;
+                          });
+                        }),
+                    RadioListTile<String>(
+                        value: 'female',
+                        title: Text('Female'),
+                        groupValue: ep.selectGender,
+                        onChanged: (val) {
+                          setState(() {
+                            ep.selectGender = val!;
+                            ep.profileData!.employee!.gender = ep.selectGender;
+                          });
+                        }),
+                    if (!genderField(ep))
+                      Row(
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                'Gender field is required. ',
+                                style:
+                                    TextStyle(fontSize: 12, color: Colors.red),
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
+                        ],
+                      )
+                  ],
+                ),
+                if (!ep.approved)
+                  Container(
+                    color: Colors.transparent,
+                    height: 150,
+                    width: double.maxFinite,
+                  )
+              ],
+            ),
+            Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Have you been  ep.interviewed previously for employment in this company? ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
-                      RadioListTile<String>(
-                          value: 'male',
-                          title: Text('Male'),
-                          groupValue: ep.selectGender,
-                          onChanged: (val) {
-                            setState(() {
-                              ep.selectGender = val!;
-                              ep.profileData!.employee!.gender =
-                                  ep.selectGender;
-                            });
-                          }),
-                      RadioListTile<String>(
-                          value: 'female',
-                          title: Text('Female'),
-                          groupValue: ep.selectGender,
-                          onChanged: (val) {
-                            setState(() {
-                              ep.selectGender = val!;
-                              ep.profileData!.employee!.gender =
-                                  ep.selectGender;
-                            });
-                          }),
-                      if (!genderField(ep))
-                        Row(
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  'Gender field is required. ',
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.red),
-                                ),
-                                SizedBox(height: 10),
-                              ],
-                            ),
-                          ],
-                        )
-                    ],
-                  ),
-                  if (!ep.approved)
-                    Container(
-                      color: Colors.transparent,
-                      height: 150,
-                      width: double.maxFinite,
-                    )
-                ],
-              ),
-              Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Have you been  ep.interviewed previously for employment in this company? ',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    ),
+                    RadioListTile<String>(
+                        value: 'Yes',
+                        title: Text('Yes'),
+                        groupValue: ep.interviewed,
+                        onChanged: (val) {
+                          setState(() {
+                            ep.interviewed = val!;
+                            ep.profileData!.employee!.interviewed =
+                                ep.interviewed;
+                          });
+                        }),
+                    RadioListTile<String>(
+                        value: 'No',
+                        title: Text('No'),
+                        groupValue: ep.interviewed,
+                        onChanged: (val) {
+                          setState(() {
+                            ep.interviewed = val!;
+                            ep.profileData!.employee!.interviewed =
+                                ep.interviewed;
+                          });
+                        }),
+                  ],
+                ),
+                if (!ep.approved)
+                  Container(
+                    color: Colors.transparent,
+                    height: 150,
+                    width: double.maxFinite,
+                  )
+              ],
+            ),
+            Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Treatment by any psychotropic drug for long / short term, history of mental illness, if any (self / family) or any major illness in previous two years.',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
-                      RadioListTile<String>(
-                          value: 'Yes',
-                          title: Text('Yes'),
-                          groupValue: ep.interviewed,
-                          onChanged: (val) {
-                            setState(() {
-                              ep.interviewed = val!;
-                              ep.profileData!.employee!.interviewed =
-                                  ep.interviewed;
-                            });
-                          }),
-                      RadioListTile<String>(
-                          value: 'No',
-                          title: Text('No'),
-                          groupValue: ep.interviewed,
-                          onChanged: (val) {
-                            setState(() {
-                              ep.interviewed = val!;
-                              ep.profileData!.employee!.interviewed =
-                                  ep.interviewed;
-                            });
-                          }),
-                    ],
-                  ),
-                  if (!ep.approved)
-                    Container(
-                      color: Colors.transparent,
-                      height: 150,
-                      width: double.maxFinite,
-                    )
-                ],
-              ),
-              Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Treatment by any psychotropic drug for long / short term, history of mental illness, if any (self / family) or any major illness in previous two years.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      RadioListTile<String>(
-                          value: 'Yes',
-                          title: Text('Yes'),
-                          groupValue: ep.treatment,
-                          onChanged: (val) {
-                            setState(() {
-                              ep.treatment = val!;
-                              ep.profileData!.employee!.treatment =
-                                  ep.treatment;
-                            });
-                          }),
-                      RadioListTile<String>(
-                          value: 'No',
-                          title: Text('No'),
-                          groupValue: ep.treatment,
-                          onChanged: (val) {
-                            setState(() {
-                              ep.treatment = val!;
-                              ep.profileData!.employee!.treatment =
-                                  ep.treatment;
-                            });
-                          }),
-                      Text(
-                          'Declaration:\n I certify that the facts stated by me in this application are true. I understand that any misrepresentation or suppression of any information will render me liable for summary dismissal forthwith from the services of the company.\nI give my consent to TEAM IDEAL to conduct a CIBIL / any other check on my profile basis the information furnished below with utmost accuracy.'),
-                      SizedBox(
-                        height: 100,
-                      ),
-                    ],
-                  ),
-                  if (!ep.approved)
-                    Container(
-                      color: Colors.transparent,
-                      height: 150,
-                      width: double.maxFinite,
-                    )
-                ],
-              ),
-            ],
-          ),
+                    ),
+                    RadioListTile<String>(
+                        value: 'Yes',
+                        title: Text('Yes'),
+                        groupValue: ep.treatment,
+                        onChanged: (val) {
+                          setState(() {
+                            ep.treatment = val!;
+                            ep.profileData!.employee!.treatment = ep.treatment;
+                          });
+                        }),
+                    RadioListTile<String>(
+                        value: 'No',
+                        title: Text('No'),
+                        groupValue: ep.treatment,
+                        onChanged: (val) {
+                          setState(() {
+                            ep.treatment = val!;
+                            ep.profileData!.employee!.treatment = ep.treatment;
+                          });
+                        }),
+                    Text(
+                        'Declaration:\n I certify that the facts stated by me in this application are true. I understand that any misrepresentation or suppression of any information will render me liable for summary dismissal forthwith from the services of the company.\nI give my consent to TEAM IDEAL to conduct a CIBIL / any other check on my profile basis the information furnished below with utmost accuracy.'),
+                    SizedBox(
+                      height: 100,
+                    ),
+                  ],
+                ),
+                if (!ep.approved)
+                  Container(
+                    color: Colors.transparent,
+                    height: 150,
+                    width: double.maxFinite,
+                  )
+              ],
+            ),
+          ],
         ),
       );
     });
@@ -1009,25 +1096,25 @@ class _FieldControl6State extends State<FieldControl6> {
                           url:
                               'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
-                          title: 'ESIC Form Download',
+                          title: 'Form2 Download',
                           field: 'form2upld',
                           type: 'sample',
                           url:
                               'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
-                          title: 'ESIC Form Download',
+                          title: 'Form11 Download',
                           field: 'form11upld',
                           type: 'sample',
                           url:
                               'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
-                          title: 'ESIC Form Download',
+                          title: 'TIPL Personal Information Form',
                           field: 'tiplinfo',
                           type: 'sample',
                           url:
                               'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'),
                       DownloadAndUploadDoc(
-                          title: 'ESIC Form Download',
+                          title: 'TIPL Joining Kit New Final',
                           field: 'tiplkit',
                           type: 'sample',
                           url:
