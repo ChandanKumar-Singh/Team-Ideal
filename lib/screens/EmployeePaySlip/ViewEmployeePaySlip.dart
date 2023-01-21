@@ -103,7 +103,7 @@ class PdfPreviewPage extends StatelessWidget {
                             // fontSize: 18
                           ),
                         ),
-                        pw.SizedBox(height: 3),
+                        pw.SizedBox(height: 10),
                         pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.center,
                           children: [
@@ -112,7 +112,7 @@ class PdfPreviewPage extends StatelessWidget {
                               style: pw.TextStyle(
                                   fontFallback: [emoji],
                                   fontWeight: pw.FontWeight.normal,
-                                  fontSize: 16),
+                                  fontSize: 14),
                             ),
                             pw.Text(
                               '${month ?? ''} ${year ?? ''}',
@@ -452,7 +452,7 @@ class PdfPreviewPage extends StatelessWidget {
               // build: (pw.Context context) {
               //   return pw.Column(
               //     children: [
-/*
+
               pw.Row(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
@@ -589,7 +589,7 @@ class PdfPreviewPage extends StatelessWidget {
                       pw.TableRow(children: [
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(5),
-                          child: pw.Text('Education Allowance	',
+                          child: pw.Text('Edu. Allowance',
                               textAlign: pw.TextAlign.left),
                         ),
                         pw.Padding(
@@ -838,8 +838,8 @@ class PdfPreviewPage extends StatelessWidget {
                   ),
                 ],
               ),
-*/
-              ///
+
+
               /*
               pw.Row(
                 children: [
@@ -1231,7 +1231,7 @@ class PdfPreviewPage extends StatelessWidget {
                 pw.Text('Net Pay : Rs. ',
                     textAlign: pw.TextAlign.left,
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text('${invoice.empsalReg!.netPay ?? '' + ' /-'}',
+                pw.Text('${invoice.empsalReg!.netPay ?? '' + '/-'}',
                     textAlign: pw.TextAlign.left,
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                 pw.Text(' /-',
