@@ -381,7 +381,7 @@ class _ManageEmployeesState extends State<ManageEmployees> {
           ['PF No', emp.panNo ?? '', false, false, 'pfno', ''],
           ['ESIC No', emp.esicNo ?? '', false, false, 'esic_no', ''],
           ['Education', emp.education ?? '', false, false, 'education', ''],
-          ['DOB', emp.dob, false, false, 'dob', ''],
+          ['DOB', emp.dob, false, false, 'dob', 'date'],
           ['Age', emp.age ?? '', false, false, 'age', ''],
           // ['Contract End Date', emp.cenddt ?? '', true, false, 'cenddt', ''],
           // ['State', emp.state ?? '', false, false,'erefefced,'],
