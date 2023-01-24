@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dakshattendance/const/config.dart';
+import 'package:dakshattendance/const/global.dart';
 import 'package:dakshattendance/model/login_model.dart';
 import 'package:dakshattendance/provider/EmployeeInfoProvider/EmployeeInfoProvider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -44,6 +45,8 @@ class UserLoginApi {
       if (response.statusCode == 200) {
         print(response.statusCode);
         responseJson = json.decode(response.body);
+        print(responseJson['status']);
+
         if (responseJson['status'] == 'Success') {
           var prefs = await SharedPreferences.getInstance();
           await prefs.setString('empId', responseJson['id']);
@@ -52,7 +55,10 @@ class UserLoginApi {
 
           return LoginModel.fromJson(responseJson);
         } else {
-          Fluttertoast.showToast(msg: responseJson['message']);
+          Loader().hideLoader(Get.context!);
+          print(responseJson['status']);
+          showpopDialog(Get.context!, 'Opps', responseJson['message']);
+          // Fluttertoast.showToast(msg: responseJson['message']);
           return null;
         }
       }

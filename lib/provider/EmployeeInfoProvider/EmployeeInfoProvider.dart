@@ -31,15 +31,13 @@ class EmployeeInfoProvider extends ChangeNotifier {
   Future<void> getProfileData() async {
     var response;
     prefs = await SharedPreferences.getInstance();
-    empId=prefs.getString('empId')??'';
+    empId = prefs.getString('empId') ?? '';
     try {
       debugPrint('$tag getProfileData ');
       loadingProfileData = true;
       notifyListeners();
       Map<String, String> headers = {"Accept": "*/*"};
-      var url = AppConst.baseUrl +
-          AppConst.edit_profile +
-          'emp_id=${empId}';
+      var url = AppConst.baseUrl + AppConst.edit_profile + 'emp_id=${empId}';
       bool cacheExist =
           await APICacheManager().isAPICacheKeyExist('profileData');
       var res = await http.get(Uri.parse(url), headers: headers);
@@ -76,8 +74,14 @@ class EmployeeInfoProvider extends ChangeNotifier {
             profileData!.employee!.is_approved == '0';
         initEducationsList(profileData!.eduDetail);
         initEmpDetailList(profileData!.empDetail);
-        initRefEmergencyList(profileData!.refEmergengy);
-        initrefPersonsList(profileData!.refPersons);
+        initRefEmergencyList((profileData!.refEmergengy != null &&
+                profileData!.refEmergengy!.isNotEmpty)
+            ? profileData!.refEmergengy
+            : [RefEmergency(), RefEmergency()]);
+        initrefPersonsList((profileData!.refPersons != null &&
+                profileData!.refPersons!.isNotEmpty)
+            ? profileData!.refPersons
+            : [RefPersons(), RefPersons(), RefPersons()]);
         notifyListeners();
       }
 
@@ -382,6 +386,11 @@ class EmployeeInfoProvider extends ChangeNotifier {
     }
   }
 
+  void removeEdu(EducationBoxModel e) {
+    educations.remove(e);
+    notifyListeners();
+  }
+
   bool isUploadingForm3 = false;
 
   Future<void> uploadField3() async {
@@ -449,6 +458,11 @@ class EmployeeInfoProvider extends ChangeNotifier {
         employees.add(detail);
       });
     }
+  }
+
+  void removeEmpDetail(EmpDetail e) {
+    employees.remove(e);
+    notifyListeners();
   }
 
   bool isUploadingForm4 = false;

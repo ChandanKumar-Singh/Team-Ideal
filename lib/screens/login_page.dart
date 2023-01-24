@@ -155,8 +155,8 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     } else {
-      Loader().hideLoader(context);
-      // showpopDialog(context, 'Opps', isLogin.message!);
+      // Loader().hideLoader(context);
+      // showpopDialog(context, 'Opps', 'isLogin.message!');
     }
   }
 
